@@ -47,6 +47,14 @@ class User(UserMixin, Document):
         return check_password_hash(self.password, password)
 
 
+class Post(Document):
+    author = ReferenceField(User)
+    title = StringField(required=True)
+    content = StringField(required=True)
+    image = ImageField()
+    dateTime = DateTimeField()
+
+
 @app.route("/")
 def home():
     return "Default Home Page"
