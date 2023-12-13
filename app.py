@@ -1,10 +1,8 @@
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-import pymongo
 from flask_login import UserMixin
 from mongoengine import *
 from werkzeug.security import generate_password_hash, check_password_hash
-
 
 app = Flask(__name__)
 
@@ -12,9 +10,9 @@ app = Flask(__name__)
 client = MongoClient("mongodb://localhost:27017/?directConnection=true")
 database = client["pentagram_db"]
 collection = database["user"]
-
 connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
 
+# Error Handling
 try:
     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
     print("succesfully connected!")
@@ -31,20 +29,21 @@ class User(UserMixin, Document):
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
 
-    # unique_emails = set()
     # Password Hashing
-    def get_user_with_username(self, username):
-        if self.username == username:
-            return self
-        else:
-            return None
-
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
     # Password Checking
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+
+class Post(Document):
+    author = ReferenceField(User)
+    title = StringField(required=True)
+    content = StringField(required=True)
+    image = ImageField()
+    date = DateTimeField()
 
 
 @app.route("/")
@@ -80,6 +79,7 @@ def register():
         new_user.set_password(data.get("password"))
         new_user.save()
         print("USER REGISTER")
+        # registered user automatically logged in
         login()
         return jsonify({"message": "Data saved successfully"})
     return "Register Page"
