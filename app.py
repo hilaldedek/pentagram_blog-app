@@ -49,7 +49,7 @@ class User(UserMixin, Document):
 
 @app.route("/")
 def home():
-    return "Home Page"
+    return "Default Home Page"
 
 
 @app.route("/login", methods=["GET", "POST"])
