@@ -43,12 +43,13 @@ class Post(Document):
     title = StringField(required=True)
     content = StringField(required=True)
     image = ImageField()
-    date = DateTimeField()
+    dateTime = DateTimeField()
+
 
 
 @app.route("/")
 def home():
-    return "Home Page"
+    return "Default Home Page"
 
 
 @app.route("/login", methods=["GET", "POST"])
