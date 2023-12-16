@@ -1,12 +1,27 @@
+import os
+import secrets
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-import pymongo
 from flask_login import UserMixin
 from mongoengine import *
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from models.user import User
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+    get_jwt,
+)
+import requests
+from config import config
 
 app = Flask(__name__)
+
+# Setup the Flask-JWT-Extended extension
+app.config.from_object(config)
+jwt = JWTManager(app)
+token_blacklist = set()
 
 # DATABASE
 client = MongoClient("mongodb://localhost:27017/?directConnection=true")
@@ -25,69 +40,55 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-# MODELS
-class User(UserMixin, Document):
-    username = StringField(required=True, max_length=64, unique=True)
-    email = EmailField(required=True, unique=True)
-    password = StringField(required=True)
-
-    # unique_emails = set()
-    # Password Hashing
-    def get_user_with_username(self, username):
-        if self.username == username:
-            return self
-        else:
-            return None
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    # Password Checking
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-
-
-class Post(Document):
-    author = ReferenceField(User)
-    title = StringField(required=True)
-    content = StringField(required=True)
-    image = ImageField()
-    dateTime = DateTimeField()
-
-
 @app.route("/")
 def home():
     return "Default Home Page"
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["POST"])
 def login():
-    if request.method == "POST":
-        data = request.get_json()
-        username = data.get("username")
-        results = collection.find_one({"username": f"{username}"})
-        if results is not None:
-            if check_password_hash(results.get("password"), data.get("password")):
-                print("USER LOGIN")
-            else:
-                print("PASSWORD WRONG")
+    data = request.get_json()
+    username = data.get("username")
+    results = collection.find_one({"username": f"{username}"})
+    if results is not None:
+        if check_password_hash(results.get("password"), data.get("password")):
+            access_token = create_access_token(identity=username)
+            return jsonify(access_token=access_token), 200
         else:
-            print("USER NOT FOUND")
-    return "Login Page"
+            return (
+                jsonify({"message": "Invalid password", "error": "invalid_password"}),
+                401,
+            )
+    else:
+        return jsonify({"message": "Invalid username"}), 401
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
+
+
+@app.route("/register", methods=["POST"])
 def register():
-    if request.method == "POST":
-        data = request.get_json()
-        new_user = User(
-            username=data.get("username"),
-            email=data.get("email"),
-            password=data.get("password"),
-        )
-        new_user.set_password(data.get("password"))
-        new_user.save()
-        print("USER REGISTER")
-        login()
-        return jsonify({"message": "Data saved successfully"})
-    return "Register Page"
+    data = request.get_json()
+    new_user = User(
+        username=data.get("username"),
+        email=data.get("email"),
+        password=data.get("password"),
+    )
+    new_user.set_password(data.get("password"))
+    new_user.save()
+    print("USER REGISTER")
+    login()
+    access_token = create_access_token(identity=new_user.username)
+    return jsonify({"message": "Data saved successfully", "access_token": access_token})
+
+
+@app.route("/logout", methods=["POST"])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    token_blacklist.add(jti)
+    return jsonify({"message": "Successfully logged out"}), 200
