@@ -18,6 +18,7 @@ from flask_jwt_extended import (
 import requests
 from config import config
 
+
 app = Flask(__name__)
 
 # Setup the Flask-JWT-Extended extension
@@ -33,7 +34,7 @@ collectionPost = database["post"]
 
 connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
 
-#Database Error Handling
+# Database Error Handling
 try:
     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
     print("succesfully connected!")
@@ -43,12 +44,20 @@ except Exception as error:
 if __name__ == "__main__":
     app.run(debug=True)
 
-#Home Page
+
+# Home Page
 @app.route("/")
 def home():
     return "Default Home Page"
 
-#Login Page
+
+def auto_increment_id():
+    len_post = collectionPost.count_documents({})
+    new_id = len_post + 1
+    return new_id
+
+
+# Login Page
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -56,7 +65,7 @@ def login():
     results = collectionUser.find_one({"username": f"{username}"})
     if results is not None:
         if check_password_hash(results.get("password"), data.get("password")):
-            #Token issued to logged in user
+            # Token issued to logged in user
             access_token = create_access_token(identity=username)
             return jsonify(access_token=access_token), 200
         else:
@@ -74,7 +83,8 @@ def protected():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
 
-#Register Page
+
+# Register Page
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
@@ -84,13 +94,14 @@ def register():
         password=data.get("password"),
     )
     new_user.set_password(data.get("password"))
-    meta = {"collection": "user"}  #Collection name to save the user to
+    meta = {"collection": "user"}  # Collection name to save the user to
     new_user.save()
     login()
     access_token = create_access_token(identity=new_user.username)
     return jsonify({"message": "Data saved successfully", "access_token": access_token})
 
-#Logout
+
+# Logout
 @app.route("/logout", methods=["POST"])
 @jwt_required()
 def logout():
@@ -98,19 +109,33 @@ def logout():
     token_blacklist.add(jti)
     return jsonify({"message": "Successfully logged out"}), 200
 
-#Post Creation
-@app.route("/post", methods=["POST"])
+
+# Post Creation
+@app.route("/post", methods=["POST", "GET"])
 @jwt_required()
 def post():
     data = request.get_json()
     current_user_id = get_jwt_identity()
     new_post = Post(
+        _id=auto_increment_id(),
         author=current_user_id,
         title=data.get("title"),
         content=data.get("content"),
-        image=data.get("image"),
+        # image=request.files.get("image"),  
         dateTime=datetime.utcnow(),
     )
-    meta = {"collection": "post"}  #Collection name to save the user to
+    meta = {"collection": "post"}  # Collection name to save the user to
     new_post.save()
     return jsonify({"message": "Post created successfully"})
+
+
+@app.route("/postdetail/<int:post_id>", methods=["GET"])
+@jwt_required()
+def detail_post(post_id):
+    current_user_id = get_jwt_identity()
+    print(current_user_id)
+    results = collectionPost.find({"author": f"{current_user_id}"})
+    results_list = list(results)
+    print(results_list)
+
+    return ""
