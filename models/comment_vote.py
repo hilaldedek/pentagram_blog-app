@@ -1,8 +1,10 @@
 from mongoengine import *
 from models.user import User
+from models.post import Post
 
 
-class scoreComment(Document):
+class Comment_vote(Document):
     person = ReferenceField(User)
-    score = IntField()
+    postID = ReferenceField(Post)
+    vote = IntField()
     comment = StringField()
