@@ -34,6 +34,7 @@ collectionUser = database["user"]
 collectionPost = database["post"]
 collectionComment_vote = database["comment_vote"]
 
+
 connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
 
 # Database Error Handling
@@ -69,6 +70,7 @@ def login():
     results = collectionUser.find_one(
         {"username": f"{username}"}
     )  # Searching the username entered by the user in the database
+
     if results is not None:
         # Checking the password if there is a username
         if check_password_hash(results.get("password"), data.get("password")):
