@@ -32,7 +32,7 @@ app.config.from_object(config)
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 app.config["JWT_BLACKLIST_ENABLED"] = True
 app.config["JWT_BLACKLIST_TOKEN_CHECKS"] = ["access"]
-jwt = JWTManager(app) 
+jwt = JWTManager(app)
 token_blacklist = set()
 
 
@@ -180,7 +180,7 @@ def detail_post(post_id):
         else:
             return jsonify({"message": "Post is not found"})
 
-    elif request.method == "PATCH":  #!!
+    elif request.method == "PATCH":
         data = request.get_json()
         print("DATA: ", data)
         # ÇALIŞMIYOR
