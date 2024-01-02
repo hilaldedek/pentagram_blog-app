@@ -43,6 +43,7 @@ def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
     return token_in_redis is not None
 
 
+
 # DATABASE
 client = MongoClient("mongodb://localhost:27017/?directConnection=true")
 database = client["pentagram_db"]
@@ -85,6 +86,7 @@ def login():
     results = collectionUser.find_one(
         {"username": f"{username}"}
     )  # Searching the username entered by the user in the database
+
     if results is not None:
         # Checking the password if there is a username
         if check_password_hash(results.get("password"), data.get("password")):
@@ -174,6 +176,7 @@ def detail_post(post_id):
             return jsonify({"message": "Post is not found"})
     elif request.method == "GET":
         json_data = jsonify(results_list)
+
 
         if json_data is not None:
             return json_data
