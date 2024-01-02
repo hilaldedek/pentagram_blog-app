@@ -42,7 +42,7 @@ database = client["pentagram_db"]
 collectionUser = database["user"]
 collectionPost = database["post"]
 collectionComment_vote = database["comment_vote"]
-collectionToken = database["token_blocklist"]
+collectionToken = database["token_block_list"]
 
 connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
 
@@ -55,25 +55,26 @@ except Exception as error:
 if __name__ == "__main__":
     app.run(debug=True)
 
-#JWT Error Handling
-@jwt.expired_token_loader
-def expired_token_callback(jwt_header,jwt_data):
-    return jsonify({"message":"Token has expired","error":"token_expired"}),401
+# JWT Error Handling
+# @jwt.expired_token_loader
+# def expired_token_callback(jwt_header,jwt_data):
+#     return jsonify({"message":"Token has expired","error":"token_expired"}),401
 
-@jwt.invalid_token_loader
-def invalid_token_callback(error):
-    return jsonify({"message":"Signature verification failed","error":"invalid_token"})
+# @jwt.invalid_token_loader
+# def invalid_token_callback(error):
+#     return jsonify({"message":"Signature verification failed","error":"invalid_token"})
 
-@jwt.unauthorized_loader
-def missing_token_callback(error):
-    return jsonify({"message":"Request doesn't contain valid token","error":"authorization_header"})
+# @jwt.unauthorized_loader
+# def missing_token_callback(error):
+#     return jsonify({"message":"Request doesn't contain valid token","error":"authorization_header"})
 
 
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blocklist(jwt_header, jwt_data):
-    jti=jwt_data["jti"]
-    token=collectionToken.find_one({'jti':jti})
-    return token is not None
+    jti = jwt_data["jti"]
+    token = collectionToken.find_one({"jti": jti})
+    if token is not None:
+        return jsonify({"message": "Token Blocklistte değil"})
 
 
 # Function to give integer sequential id to incoming data
@@ -109,18 +110,17 @@ def post_list_view():
     skip = (page - 1) * per_page
     posts = Post.objects.skip(skip).limit(per_page)
     formatted_posts = [
-        {"_id": str(post["_id"]), 
-         "title": post["title"], 
-         "content": post["content"], 
-         "dateTime": post["dateTime"].isoformat()
+        {
+            "_id": str(post["_id"]),
+            "title": post["title"],
+            "content": post["content"],
+            "dateTime": post["dateTime"].isoformat(),
         }
         for post in posts
     ]
 
-    return (
-        jsonify({"posts": formatted_posts}),
-        200
-    )
+    return (jsonify({"posts": formatted_posts}), 200)
+
 
 # Login Page
 @app.route("/user/auth/login", methods=["POST"])
@@ -169,11 +169,14 @@ def register():
 @app.route("/user/auth/logout", methods=["POST"])
 @jwt_required()
 def logout():
-    jwt=get_jwt()
-    jti=jwt['jti']
-    token_b=TokenBlockList(jti=jti)
+    jwt = get_jwt()
+    jti = jwt["jti"]
+    token_b = TokenBlockList(jti=jti)
     token_b.save()
-    return jsonify({"message":"loged out successfully"}),200
+    if collectionToken.find({"jti": jti}):
+        return jsonify({"message": "loged out successfully"}), 200
+    else:
+        return jsonify({"message": "Token is not on Blocklist"})
 
 
 # Post Creation

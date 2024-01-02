@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url('../styles/variables.css');
 .main{
     margin-top: 100px;
     display: flex;

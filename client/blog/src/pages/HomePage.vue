@@ -1,16 +1,20 @@
 <template>
     <div>
-        Home Page
-        <router-view></router-view>
+        <NavbarComponent/>
+        <PostComponent/>
+        <FooterComponent/>
     </div>
 </template>
 
 <script>
+import PostComponent from '@/components/PostComponent.vue';
+import NavbarComponent from '@/components/NavbarComponent.vue';
+import FooterComponent from '@/components/FooterComponent.vue';
+
     export default {
-        components:{
-            
-        }
-    }
+    name: "HomePage",
+    components: { NavbarComponent,PostComponent,FooterComponent}
+};
 </script>
 
 <style lang="scss" scoped>

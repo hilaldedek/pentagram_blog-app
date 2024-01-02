@@ -2,10 +2,13 @@
     
         <div class="navbar"> 
             <div class="main">
-              <h1 class="header"><a href="/">Pentagram</a></h1>
+              <h1 class="header"><router-link to="/">Pentagram</router-link></h1>
                 <div>
-                    <a href="/login" class="buttonStyle">Login/Register</a>
+                    <router-link to="/login" class="buttonStyle">Login/Register</router-link>
                 </div>
+                <div>
+                  <router-link to="/post" class="buttonStyle">Create Post</router-link>
+              </div>
               
             </div>
             

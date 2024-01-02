@@ -26,7 +26,7 @@
 .content__inputs {
   display: flex;
   flex-direction: column;
-  row-gap: 8px;
+  row-gap:2rem;
 }
 
 .content__form label {
@@ -40,17 +40,11 @@
   border-radius: 3px;
 }
 
-.content__form span {
-  position: absolute;
-  text-overflow: ellipsis;
-  transform-origin: left;
-  font-size: 12px;
-  left: 8px;
-  pointer-events: none;
-  transition: transform ease-out 0.1s;
-}
-
-.content__form input {
+.content__form textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 50px;
+  max-height: 100px;
   width: 100%;
   background: inherit;
   border: 0;
@@ -60,6 +54,13 @@
   font-size: 16px;
   vertical-align: middle;
 }
+
+.content__form .title {
+  height: 3rem;
+}
+.content__form .content {
+    height: 10rem;
+  }
 
 .content__form input:valid + span {
   transform: scale(calc(10 / 12)) translateY(-10px);
