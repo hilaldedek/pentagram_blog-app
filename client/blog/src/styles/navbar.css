@@ -1,0 +1,38 @@
+@import '../styles/variables.css';
+/* HeaderFontFamily */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
+/* ButtonFontFamily */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap');
+.navbar{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    left: 0;
+}
+.main{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--navbar-button-color);
+    
+
+}
+.header a{
+    color:var(--navbar-header-color);
+    text-decoration: none;
+    margin-left: 1rem;
+    font-weight: 900;
+    font-family: 'DM Serif Display', serif;
+}
+.buttonStyle{
+    border-radius: 40px;
+    margin-right: 1rem;
+    height: 3rem;
+    border:none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: var(--navbar-button-color);
+    color:var(--navbar-text-color);
+    font-family: 'Raleway', sans-serif;
+}

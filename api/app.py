@@ -8,6 +8,7 @@ from mongoengine import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.user import User
 from models.post import Post
+from models.token import TokenBlockList
 from models.comment_vote import Comment_vote
 from flask_jwt_extended import (
     JWTManager,
@@ -41,6 +42,7 @@ database = client["pentagram_db"]
 collectionUser = database["user"]
 collectionPost = database["post"]
 collectionComment_vote = database["comment_vote"]
+collectionToken = database["token_blocklist"]
 
 connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
 
@@ -53,22 +55,28 @@ except Exception as error:
 if __name__ == "__main__":
     app.run(debug=True)
 
+#JWT Error Handling
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header,jwt_data):
+    return jsonify({"message":"Token has expired","error":"token_expired"}),401
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    return jsonify({"message":"Signature verification failed","error":"invalid_token"})
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    return jsonify({"message":"Request doesn't contain valid token","error":"authorization_header"})
+
 
 @jwt.token_in_blocklist_loader
-def check_if_token_in_blocklist(jwt_header, jwt_payload):
-    return jwt_payload["jti"] in BLOCKLIST
+def check_if_token_in_blocklist(jwt_header, jwt_data):
+    jti=jwt_data["jti"]
+    token=collectionToken.find_one({'jti':jti})
+    return token is not None
 
 
-@jwt.revoked_token_loader
-def revoked_token_callback(jwt_header, jwt_payload):
-    return (
-        jsonify(
-            {"description": "The token has been revoked.", "error": "token_revoked"}
-        ),
-        401,
-    )
-
-
+# Function to give integer sequential id to incoming data
 def auto_increment_id_for_post():
     last_id = (
         collectionPost.find().sort({"_id": -1}).limit(1)
@@ -113,15 +121,6 @@ def post_list_view():
         jsonify({"posts": formatted_posts}),
         200
     )
-
-    # # All users can list all comments and votes
-    # results = list(collectionPost.find({}))
-    # print("RESULTS: ", results)
-    # json_data = jsonify(results)
-    # print(json_data)
-    # if json_data is not None:
-    #     return json_data
-
 
 # Login Page
 @app.route("/user/auth/login", methods=["POST"])
@@ -170,9 +169,11 @@ def register():
 @app.route("/user/auth/logout", methods=["POST"])
 @jwt_required()
 def logout():
-    jti = get_jwt()["jti"]
-    BLOCKLIST.add(jti)
-    return {"message": "Successfully logged out"}, 200
+    jwt=get_jwt()
+    jti=jwt['jti']
+    token_b=TokenBlockList(jti=jti)
+    token_b.save()
+    return jsonify({"message":"loged out successfully"}),200
 
 
 # Post Creation
