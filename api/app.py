@@ -18,14 +18,16 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_jwt,
 )
-import requests
-from config import config, BaseConfig
-import redis
+from config import config
+from flask_cors import CORS, cross_origin
+
 
 ACCESS_EXPIRES = timedelta(hours=1)
 BLOCKLIST = set()
 
 app = Flask(__name__)
+CORS(app)
+
 
 # jwt_redis_blocklist = redis.StrictRedis(
 #     host="localhost", port=6379, db=0, decode_responses=True
@@ -104,6 +106,7 @@ def auto_increment_id_for_comment():
 
 # Home Page
 @app.route("/", methods=["GET"])
+@cross_origin()
 def post_list_view():
     page = request.args.get("page", default=1, type=int)
     per_page = request.args.get("page", default=3, type=int)
@@ -124,6 +127,7 @@ def post_list_view():
 
 # Login Page
 @app.route("/user/auth/login", methods=["POST"])
+@cross_origin()
 def login():
     data = request.get_json()
     user = User.get_user_by_username(username=data.get("username"))
@@ -161,7 +165,7 @@ def register():
     new_user.set_password(password=data.get("password"))  # password hashing
     meta = {"collection": "user"}  # Collection name to save the user to
     new_user.save()  # Saving the user to the database
-    login()  # Ensuring that the registered user is logged in at the same time
+    # login()  # Ensuring that the registered user is logged in at the same time
     return jsonify({"message": "Data saved successfully and successfuly logged in"})
 
 
@@ -198,7 +202,23 @@ def post():
     return jsonify({"message": "Post created successfully"})
 
 
-@app.route("/post/<int:post_id>", methods=["DELETE", "PATCH", "GET"])
+@app.route("/user/post", methods=["GET"])
+@jwt_required()
+def userPost():
+    current_user_id = get_jwt_identity()
+    results = collectionPost.find(
+        {"author": f"{current_user_id}"}
+    )  # The value from the url was searched in the database
+    results_list = list(results)
+    json_data = jsonify(results_list)
+    if json_data is not None:
+        return json_data
+    else:
+        return jsonify({"message": "Posts is not found"})
+
+
+@app.route("/post/<int:post_id>", methods=["DELETE", "PUT", "GET"])
+
 @jwt_required()
 def detail_post(post_id):
     current_user_id = get_jwt_identity()  # current user
@@ -226,7 +246,7 @@ def detail_post(post_id):
         else:
             return jsonify({"message": "Post is not found"})
 
-    elif request.method == "PATCH":
+    elif request.method == "PUT":
         if results_list.__len__() != 0:
             data = request.get_json()
             collectionPost.update_one({"_id": post_id}, {"$set": data})
@@ -259,7 +279,7 @@ def comment_vote(post_id):
             return jsonify({"message": "Post is not found"})
 
 
-@app.route("/comment/<int:comment_id>", methods=["GET", "DELETE", "PATCH"])
+@app.route("/comment/<int:comment_id>", methods=["GET", "DELETE", "PUT"])
 @jwt_required()
 def comment_vote_detail(comment_id):
     current_user_id = get_jwt_identity()  # current user
@@ -275,7 +295,7 @@ def comment_vote_detail(comment_id):
             return json_data
         else:
             return jsonify({"message": "Comment is not found"})
-    elif request.method == "PATCH":
+    elif request.method == "PUT":
         if results_list_update.__len__() != 0:
             data = request.get_json()
             collectionComment_vote.update_one({"_id": comment_id}, {"$set": data})

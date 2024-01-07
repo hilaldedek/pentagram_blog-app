@@ -4,8 +4,6 @@
   </div>
 </template>
 
-<script>
-</script>
+<script></script>
 
-<style src="./styles/app.css" scoped>
-</style>
+<style src="../src/styles/app.css" scoped></style>

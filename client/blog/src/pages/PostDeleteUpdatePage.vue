@@ -4,18 +4,27 @@
     <div class="container">
       <div class="content">
         <h1 class="header">Post Delete/Update</h1>
-        <form class="content__form">
+        <form class="content__form" @submit.prevent="updatePost">
           <div class="content__inputs">
             <label class="title">
-              <textarea required="" type="text" placeholder="Title" />
+              <textarea
+                v-model="title"
+                required=""
+                type="text"
+                placeholder="title"
+              />
             </label>
             <label class="content">
-              <textarea required="" type="text" placeholder="Content" />
+              <textarea
+                v-model="content"
+                required=""
+                type="text"
+                placeholder="content"
+              />
             </label>
           </div>
           <div class="buttons">
-            <button class="delete">Delete</button>
-            <button class="update">Update</button>
+            <button type="submit" class="update">Update</button>
           </div>
         </form>
       </div>
@@ -33,6 +42,37 @@ export default {
   components: {
     NavbarComponent,
     FooterComponent,
+  },
+  data() {
+    return {
+      title: "",
+      content: "",
+    };
+  },
+  methods: {
+    async updatePost() {
+      const getToken = localStorage.getItem("access_token");
+      const postId = this.$route.params.postId;
+      console.log("POSTID", postId);
+      const response = await fetch(`http://127.0.0.1:5000/post/${postId}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${getToken}`,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http:/localhost:8080",
+        },
+        body: JSON.stringify({
+          title: this.title,
+          content: this.content,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      if (response.ok) {
+        this.$router.push("/profile");
+      }
+    },
   },
 };
 </script>

@@ -2,19 +2,30 @@
   <div>
     <NavbarComponent />
     <PostComponent :postData="postData"/>
-    <FooterComponent />
+    <!-- <FooterComponent /> -->
   </div>
 </template>
 
 <script>
 import PostComponent from "@/components/PostComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue";
-import FooterComponent from "@/components/FooterComponent.vue";
+// import FooterComponent from "@/components/FooterComponent.vue";
 import axios from "axios";
+
+/**
+ * The HomePage component represents the main page of the application.
+ *
+ * This component includes a navbar (NavbarComponent), a list of posts (PostComponent), and a footer (FooterComponent).
+ * Upon page load, it fetches post data from the backend and displays the list of posts.
+ * Users can navigate between pages and perform page navigation actions.
+ *
+ * @name HomePage
+ * @component
+ */
 
 export default {
   name: "HomePage",
-  components: { NavbarComponent, PostComponent, FooterComponent },
+  components: { NavbarComponent, PostComponent },
   data() {
     return {
       postData: null,
@@ -22,30 +33,29 @@ export default {
     };
   },
   mounted() {
-    this.fetchData();
+    this.getData();
   },
+
+  /**
+     * Fetches post data from the backend and updates the postData property.
+     *
+     * @method
+     * @name getData
+     */
+
   methods: {
     
-    fetchData() {
-      const page = this.currentPage;
-      axios.get(`http://127.0.0.1:5000/?page=${page}`)
+    getData() {
+      // const page = this.currentPage;
+      axios.get(`http://127.0.0.1:5000`)
         .then(response => {
-          this.postData = response.data; // Bu, gelen veriyi postData değişkenine atar
+          this.postData = response.data;
         })
         .catch(error => {
           console.error("Veri alınamadı:", error);
         });
     },
-    nextPage() {
-      this.currentPage++; // Increment current page
-      this.fetchData(); // Fetch data for the new page
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--; // Decrement current page, but not below 1
-        this.fetchData(); // Fetch data for the new page
-      }
-  },
+    
 }}
 </script>
 
