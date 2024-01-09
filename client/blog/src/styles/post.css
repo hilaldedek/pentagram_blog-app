@@ -1,87 +1,128 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kalnia:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('../styles/variables.css');
-.main{
-    margin-top: 100px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kalnia:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("../styles/variables.css");
+.main {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 .card {
-    margin: 2rem;
-    position: relative;
-    width: 25rem;
-    height: 25rem;
-    border:15px solid #bfc1b8;
-    box-shadow: 0px 1px 13px rgba(0,0,0,0.1);
-    transition: all 120ms;
-    display: flex;
-    flex-direction: column;
-    
-    align-items: center;
-    justify-content: center;
-    background: #EEF0E5;
-    padding: 0.5em;
-    padding-bottom: 3.4em;
-  }
-  .author{
-    margin-top: 1rem;
-    font-family: 'Lobster', sans-serif;
-    font-size: 1.2rem;
-    color: #65451F;
-  }
-  .card .title {
-    font-family: 'Kalnia', serif;
-    font-size: 1.8rem;
-    margin-top: 1rem;
-    font-weight: 500;
-    color: var(--navbar-header-color);
-  }
-  
-  .card .content {
-    margin-top: 1rem;
-    text-align: center;
-    font-family: 'Lora', serif;
-    font-size: 1.1rem;
-    color: #000;
-  }
-  
-  .card:hover::after {
-    bottom: 0;
-    opacity: 1;
-  }
-  
-  .card:active {
-    transform: scale(0.98);
-  }
-  
-  .text {
-    max-width: 55px;
-  }
-  
-  .image {
-    background: rgb(241, 241, 241);
-    width: 100%;
-    height: 100%;
-    display: grid;
-    place-items: center;
-  }
+  margin: 2rem;
+  position: relative;
+  width: 25rem;
+  height: 25rem;
+  border: 15px solid #bfc1b8;
+  box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.1);
+  transition: all 120ms;
+  display: flex;
+  flex-direction: column;
 
-  .pagination {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .pagination button{
-    padding: 0.6rem;
-    border-radius: 20px;
-    margin-bottom: 3rem;
-    color: #EEF0E5;
-    background-color: #706233;
-    cursor: pointer;
-  }
+  align-items: center;
+  justify-content: center;
+  background: #eef0e5;
+  padding: 0.5em;
+  padding-bottom: 3.4em;
+}
+.author {
+  margin-top: 1rem;
+  font-family: "Lobster", sans-serif;
+  font-size: 1.2rem;
+  color: #000000;
+}
+.card .title {
+  font-family: "Kalnia", serif;
+  font-size: 1.8rem;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: var(--navbar-header-color);
+}
 
+.card .content {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: "Lora", serif;
+  font-size: 1.1rem;
+  color: #000;
+}
 
-  
+.card:hover::after {
+  bottom: 0;
+  opacity: 1;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.text {
+  max-width: 55px;
+}
+
+.image {
+  background: rgb(241, 241, 241);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination button {
+  padding: 0.6rem;
+  border-radius: 20px;
+  margin-bottom: 3rem;
+  color: #eef0e5;
+  background-color: #706233;
+  cursor: pointer;
+}
+.button {
+  margin: 1rem;
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 1.5rem;
+  background: #bfc1b8;
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+
+.buttonComment::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(82.3deg, #B0A695 10.8%, #776B5D 94.3%);
+  transition: all 0.475s;
+}
+
+.image {
+  background: rgb(241, 241, 241);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}

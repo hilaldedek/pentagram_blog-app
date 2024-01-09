@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Kalnia:wght@500&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
 @import url("../styles/variables.css");
 .main {
   margin-top: 100px;
@@ -61,6 +62,67 @@
   max-width: 55px;
 }
 
+.button {
+  margin: 1rem;
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 1.5rem;
+  background: #bfc1b8;
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: "DM Serif Display", serif;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+
+.buttonUpdate::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  
+  background: linear-gradient(
+    82.3deg,
+    rgb(93, 233, 158) 10.8%,
+    rgb(44, 189, 61) 94.3%
+  );
+  transition: all 0.475s;
+}
+.buttonDelete::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(
+    82.3deg,
+    #FF8989 10.8%,
+    #FF6666 94.3%
+  );
+  transition: all 0.475s;
+}
+
+
 .image {
   background: rgb(241, 241, 241);
   width: 100%;
@@ -69,76 +131,9 @@
   place-items: center;
 }
 
-.pagination {
+.UDButtons{
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-}
-
-.pagination button {
-  padding: 0.6rem;
-  border-radius: 20px;
-  margin-bottom: 3rem;
-  color: #eef0e5;
-  background-color: #706233;
-  cursor: pointer;
-}
-
-.bookmarkBtn {
-  width: 100px;
-  height: 40px;
-  border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.349);
-  background-color: #bfc1b8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition-duration: 0.3s;
-  overflow: hidden;
-}
-
-.IconContainer {
-  width: 30px;
-  height: 30px;
-  background: linear-gradient(to bottom, #86a483, #48644b);
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  z-index: 2;
-  transition-duration: 0.3s;
-}
-
-.icon {
-  border-radius: 1px;
-}
-
-.text {
-  height: 100%;
-  width: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  z-index: 1;
-  transition-duration: 0.3s;
-  font-size: 1.04em;
-}
-
-.bookmarkBtn:hover .IconContainer {
-  width: 90px;
-  transition-duration: 0.3s;
-}
-
-.bookmarkBtn:hover .text {
-  transform: translate(10px);
-  width: 0;
-  font-size: 0;
-  transition-duration: 0.3s;
-}
-
-.bookmarkBtn:active {
-  transform: scale(0.95);
-  transition-duration: 0.3s;
+  margin: 2rem;
 }

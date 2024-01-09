@@ -10,7 +10,7 @@
 import PostComponent from "@/components/PostComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue";
 // import FooterComponent from "@/components/FooterComponent.vue";
-import axios from "axios";
+
 
 /**
  * The HomePage component represents the main page of the application.
@@ -46,15 +46,21 @@ export default {
   methods: {
     
     getData() {
-      // const page = this.currentPage;
-      axios.get(`http://127.0.0.1:5000`)
-        .then(response => {
-          this.postData = response.data;
-        })
-        .catch(error => {
-          console.error("Veri alınamadı:", error);
-        });
-    },
+  // const page = this.currentPage;
+  fetch('http://127.0.0.1:5000')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Veri alınamadı');
+      }
+      return response.json();
+    })
+    .then(data => {
+      this.postData = data;
+    })
+    .catch(error => {
+      console.error('Veri alınamadı:', error.message);
+    });
+},
     
 }}
 </script>

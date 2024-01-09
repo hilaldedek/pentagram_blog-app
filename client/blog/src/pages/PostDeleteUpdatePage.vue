@@ -3,7 +3,7 @@
     <NavbarComponent />
     <div class="container">
       <div class="content">
-        <h1 class="header">Post Delete/Update</h1>
+        <h1 class="header">Post Update</h1>
         <form class="content__form" @submit.prevent="updatePost">
           <div class="content__inputs">
             <label class="title">

@@ -12,14 +12,12 @@
           <span class="author">{{ post.author }}</span>
           <span class="dateTime">{{ formatDateTime(post.dateTime) }}</span>
           <div>
-            <div>
-              <button @click="updatePost(post._id)" class="bookmarkBtn">
-                <span class="IconContainer"> </span>
-                <p class="text">Update</p>
+            <div class="UDButtons">
+              <button @click="updatePost(post._id)" class="button buttonUpdate">
+                <p class="button-content">Update</p>
               </button>
-              <button class="bookmarkBtn">
-                <span class="IconContainerDel"></span>
-                <p class="text">Delete</p>
+              <button class="button buttonDelete" @click="deletePost(post._id)">
+                <p class="button-content">Delete</p>
               </button>
             </div>
           </div>
@@ -51,7 +49,7 @@ export default {
         const response = await fetch("http://127.0.0.1:5000/user/post", {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${getToken}`,
+            Authorization: `Bearer ${getToken}`,
           },
         });
 
@@ -76,9 +74,26 @@ export default {
       return new Date(dateTime).toLocaleString("tr-TR", options);
     },
     updatePost(post) {
-      this.$router.push({ path: `/post/${post}`, params: { postId: post }});
-
-},
+      this.$router.push({ path: `/post/${post}`, params: { postId: post } });
+    },
+    async deletePost(post) {
+      const getToken = localStorage.getItem("access_token");
+      const postId = post;
+      const response = await fetch(`http://127.0.0.1:5000/post/${postId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http:/localhost:8080",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      if (response.ok) {
+        window.location.reload();
+      }
+    },
   },
 };
 </script>

@@ -1,0 +1,226 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap");
+.commentForm {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+}
+.input {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  width: 20rem;
+  height: 3rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #fff;
+  background-color: rgba(28, 28, 30, 0.349);
+  box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.5), 0 0 0 0.15vw transparent;
+  border-radius: 0.4vw;
+  border: none;
+  outline: none;
+  padding: 0.4vw;
+  transition: 0.4s;
+}
+
+.input:hover {
+  box-shadow: 0 0 0 0.15vw rgba(135, 207, 235, 0.186);
+}
+
+.input:focus {
+  box-shadow: 0 0 0 0.15vw skyblue;
+}
+.button {
+  margin: 1rem;
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  border-radius: 1.5rem;
+  background: #bfc1b8;
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: "DM Serif Display", serif;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+
+.buttonDelete::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(82.3deg, #304d30 10.8%, #163020 94.3%);
+  transition: all 0.475s;
+}
+
+.image {
+  background: rgb(241, 241, 241);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.card {
+  width: 50%;
+  height: auto;
+  background: #b6c4b6;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  backdrop-filter: blur(10px);
+  transition: 0.5s ease-in-out;
+  margin: 1rem;
+}
+
+.card:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.textBox {
+  width: calc(100% - 90px);
+  margin-left: 10px;
+  color: #092635;
+  font-family: "Poppins" sans-serif;
+}
+
+.textContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.span {
+  font-size: 10px;
+}
+
+.h1 {
+  font-size: 16px;
+  font-weight: 900;
+  font-family: "Raleway", sans-serif;
+}
+
+.p {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.likePost {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.heart-container {
+  --heart-color: rgb(255, 91, 137);
+  position: relative;
+  margin-left: 1rem;
+  width: 30px;
+  height: 30px;
+  transition: 0.3s;
+}
+
+.heart-container .checkbox {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 20;
+  cursor: pointer;
+}
+
+.heart-container .svg-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heart-container .svg-outline,
+.heart-container .svg-filled {
+  fill: var(--heart-color);
+  position: absolute;
+}
+
+.heart-container .svg-filled {
+  animation: keyframes-svg-filled 1s;
+  display: none;
+}
+
+.heart-container .svg-celebrate {
+  position: absolute;
+  animation: keyframes-svg-celebrate 0.5s;
+  animation-fill-mode: forwards;
+  display: none;
+  stroke: var(--heart-color);
+  fill: var(--heart-color);
+  stroke-width: 2px;
+}
+
+.heart-container .checkbox:checked ~ .svg-container .svg-filled {
+  display: block;
+}
+
+.heart-container .checkbox:checked ~ .svg-container .svg-celebrate {
+  display: block;
+}
+
+@keyframes keyframes-svg-filled {
+  0% {
+    transform: scale(0);
+  }
+
+  25% {
+    transform: scale(1.2);
+  }
+
+  50% {
+    transform: scale(1);
+    filter: brightness(1.5);
+  }
+}
+
+@keyframes keyframes-svg-celebrate {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    filter: brightness(1.5);
+  }
+
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+    display: none;
+  }
+}

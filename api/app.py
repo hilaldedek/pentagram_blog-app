@@ -108,15 +108,17 @@ def auto_increment_id_for_comment():
 @app.route("/", methods=["GET"])
 @cross_origin()
 def post_list_view():
-    page = request.args.get("page", default=1, type=int)
-    per_page = request.args.get("page", default=3, type=int)
-    skip = (page - 1) * per_page
-    posts = Post.objects.skip(skip).limit(per_page)
+    # page = request.args.get("page", default=1, type=int)
+    # per_page = request.args.get("page", default=3, type=int)
+    # skip = (page - 1) * per_page
+    # posts = Post.objects.skip(skip).limit(per_page)
+    posts = list(collectionPost.find())
     formatted_posts = [
         {
             "_id": str(post["_id"]),
             "title": post["title"],
             "content": post["content"],
+            "author": str(post["author"]),
             "dateTime": post["dateTime"].isoformat(),
         }
         for post in posts
@@ -218,7 +220,6 @@ def userPost():
 
 
 @app.route("/post/<int:post_id>", methods=["DELETE", "PUT", "GET"])
-
 @jwt_required()
 def detail_post(post_id):
     current_user_id = get_jwt_identity()  # current user
@@ -310,25 +311,37 @@ def comment_vote_detail(comment_id):
         return jsonify({"message": "Comment deleted successfully"})
 
 
-# @app.route("/comment-vote/list", methods=["GET"])
-# def comment_vote_list_view():
-#     # All users can list comments and votes
-#     results = collectionComment_vote.find({}, projection={"_id": 0})
-#     results_list = list(results)
-#     json_data = results_list
-#     print(json_data)
-#     if json_data is not None:
-#         return jsonify(json_data)
-#     else:
-#         return jsonify({"message": "Post is not found"})
+@app.route("/comment-list/<int:post_id>", methods=["GET"])
+def comment_vote_list_view(post_id):
+    # All users can list comments and votes
+    results = collectionComment_vote.find({"postID": post_id})
+    results_list = list(results)
+    json_data = results_list
+    print(json_data)
+    if json_data is not None:
+        return jsonify(json_data)
+    else:
+        return jsonify({"message": "Post is not found"})
 
 
-# @app.route("/post/list", methods=["GET"])
-# def post_list_view():
-#     # All users can list all comments and votes
-#     results = list(collectionPost.find({}))
-#     print("RESULTS: ", results)
-#     json_data = jsonify(results)
-#     print(json_data)
-#     if json_data is not None:
-#         return json_data
+@app.route("/vote/<int:post_id>", methods=["GET"])
+def voteCounter(post_id):
+    results = collectionComment_vote.find({"postID": post_id})
+    results_list = list(results)
+    like_count = 0
+    dislike_count = 0
+    comment_count = 0
+    for result in results_list:
+        if "vote" in result and result["vote"] is not None:
+            if result["vote"]:
+                like_count += 1
+            else:
+                dislike_count += 1
+        if "comment" in result and result["comment"] is not None:
+            comment_count += 1
+    result_data = {
+        "like_count": like_count,
+        "dislike_count": dislike_count,
+        "comment_count": comment_count,
+    }
+    return jsonify(result_data)
