@@ -73,11 +73,13 @@ export default {
         if (response.ok) {
           if (localStorage.getItem("access_token")) {
             localStorage.removeItem("access_token");
+            localStorage.removeItem("username");
           }
           localStorage.setItem(
             "access_token",
             responseData.tokens["access token"]
           );
+          localStorage.setItem("username", this.username);
           this.$router.push("/");
         }
       } catch (error) {

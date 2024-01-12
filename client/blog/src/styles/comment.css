@@ -8,6 +8,27 @@
   display: flex;
   flex-direction: column;
 }
+.createComment{
+  width: 50%;
+  position: relative;
+  margin: auto;
+  border-radius: 10px;
+  margin: 5rem;
+  padding: 3rem;
+  background-color: #a87c7c82;
+  
+}
+.createComment p{
+  font-size: 1.5rem;
+  color: #a87c7c;
+  font-family: "Kalnia", serif;
+  text-align: center;
+}
+.likePost p{
+  font-family: "Kalnia", serif;
+  font-weight: 700;
+  color: #3E3232;
+}
 .input {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -135,7 +156,6 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  
 }
 
 .heart-container {
@@ -183,6 +203,21 @@
   stroke: var(--heart-color);
   fill: var(--heart-color);
   stroke-width: 2px;
+}
+
+.btnImg{
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.btn{
+  border-radius: 10px;
+  padding: 0.2rem;
+  border: none;
+  margin: 0.5rem;
+  cursor: pointer;
+  background-color: #9595957d;
 }
 
 .heart-container .checkbox:checked ~ .svg-container .svg-filled {

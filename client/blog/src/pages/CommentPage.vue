@@ -58,6 +58,9 @@
         </form>
       </div>
       <div class="comments">
+          <div v-if="comments.length === 0" class="createComment">
+            <p>No comments yet. Come on leave a comment!</p>
+          </div>
         <div class="card" v-for="comment in comments" :key="comment._id">
           <div class="textBox">
             <div class="textContent">
@@ -71,6 +74,35 @@
             <p class="p" v-if="comment.vote == undefined">
               {{ comment.person }}
             </p>
+            <form
+              action=""
+              @submit.prevent="updateComment(comment._id)"
+              v-show="isClicked && comment.person === localStorageData"
+            >
+              <input
+                v-model="updatedComment"
+                type="text"
+                name="updatedText"
+                class="input"
+                placeholder="Update your comment"
+              />
+              <button class="button buttonDelete">
+                <p class="button-content">Send</p>
+              </button>
+            </form>
+
+            <button
+              v-if="comment.person === localStorageData"
+              @click="handleButtonClick(comment._id)"
+              class="btn"
+            >
+              <img src="../assets/refresh.png" alt="" class="btnImg" />
+            </button>
+            <form action="" @submit.prevent="deleteComment(comment._id)">
+              <button v-if="comment.person === localStorageData" class="btn">
+                <img src="../assets/delete.png" alt="" class="btnImg" />
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -94,13 +126,22 @@ export default {
       comments: [],
       comment: "",
       vote: "",
+      updatedComment: "",
       isLiked: false,
+      isClicked: false,
+      localStorageData: localStorage.getItem("username") || null,
+      activeCommentId: null,
     };
   },
   mounted() {
     this.getCommentData();
   },
   methods: {
+    handleButtonClick(commentId) {
+      this.isClicked = !this.isClicked;
+      console.log("Clicked: " + this.isClicked + "CommentId: " + commentId);
+      this.activeCommentId = commentId;
+    },
     toggleLike() {
       this.isLiked = !this.isLiked;
       console.log("Liked: " + this.isLiked);
@@ -149,6 +190,59 @@ export default {
           }
         );
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        if (response.ok) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error("Veri alınamadı:", error);
+      }
+    },
+    async updateComment(comment) {
+      try {
+        const getToken = localStorage.getItem("access_token");
+        const commentId = comment;
+        const response = await fetch(
+          `http://127.0.0.1:5000/comment/${commentId}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${getToken}`,
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "http:/localhost:8080",
+            },
+            body: JSON.stringify({
+              comment: this.updatedComment,
+            }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        if (response.ok) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error("Veri alınamadı:", error);
+      }
+    },
+    async deleteComment(comment) {
+      try {
+        const getToken = localStorage.getItem("access_token");
+        const commentId = comment;
+        const response = await fetch(
+          `http://127.0.0.1:5000/comment/${commentId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${getToken}`,
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "http:/localhost:8080",
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

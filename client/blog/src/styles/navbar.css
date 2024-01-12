@@ -10,12 +10,14 @@
   width: 100%;
   left: 0;
   z-index: 10;
+  
+  
 }
 .main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--navbar-button-color);
+  background-color: var(--navbar-bg-color);
 }
 .header a {
   color: var(--navbar-header-color);

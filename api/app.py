@@ -305,7 +305,7 @@ def comment_vote_detail(comment_id):
             return jsonify({"msg": "This comment does not belong to you"})
     elif request.method == "DELETE":
         if results_list_update.__len__() != 0:
-            collectionPost.delete_one(
+            collectionComment_vote.delete_one(
                 {"_id": comment_id}
             )  # deleting the data whose id is given
         return jsonify({"message": "Comment deleted successfully"})

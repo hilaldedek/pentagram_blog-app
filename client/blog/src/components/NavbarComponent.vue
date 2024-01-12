@@ -7,13 +7,13 @@
           >Login/Register</router-link
         >
       </div>
-      <div>
+      <div v-if="localStorageData">
         <router-link to="/post" class="buttonStyle">Create Post</router-link>
       </div>
-      <div>
+      <div v-if="localStorageData">
         <router-link to="/profile" class="buttonStyle">Profile</router-link>
       </div>
-      <div>
+      <div v-if="localStorageData">
         <button @click="logout" class="buttonStyle">Logout</button>
       </div>
     </div>
@@ -58,8 +58,9 @@ export default {
           },
         });
         if (response.ok) {
-          alert("Logged out successfully");
           localStorage.removeItem("access_token");
+          localStorage.removeItem("username");
+          window.location.reload();
           if (this.$route.path !== "/") {
             this.$router.push("/");
           }
@@ -72,6 +73,11 @@ export default {
         console.error("Logout error:", error);
         alert("Logout failed");
       }
+    },
+  },
+  computed: {
+    localStorageData() {
+      return localStorage.getItem("username");
     },
   },
 };

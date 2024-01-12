@@ -2,6 +2,10 @@
   <div>
     <NavbarComponent />
     <div class="main">
+      <div v-if="posts.length === 0" class="createPost">
+        <p>You don't have any posts.</p>
+        <router-link to="/post" class="buttonStyle">Create Post</router-link>
+      </div>
       <div>
         <div v-for="post in posts" :key="post._id" class="card">
           <!-- <div class="image">

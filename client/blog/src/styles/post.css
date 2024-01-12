@@ -12,19 +12,15 @@
 .card {
   margin: 2rem;
   position: relative;
-  width: 25rem;
-  height: 25rem;
   border: 15px solid #bfc1b8;
   box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.1);
   transition: all 120ms;
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
   background: #eef0e5;
-  padding: 0.5em;
-  padding-bottom: 3.4em;
+  padding: 1rem;
 }
 .author {
   margin-top: 1rem;
