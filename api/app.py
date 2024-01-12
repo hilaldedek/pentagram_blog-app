@@ -175,7 +175,6 @@ def logout():
     token_b.save()
     return jsonify({"message":"loged out successfully"}),200
 
-
 # Post Creation
 @app.route("/post", methods=["POST"])
 @jwt_required()
