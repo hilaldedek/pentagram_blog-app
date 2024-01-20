@@ -6,10 +6,36 @@
           <span class="title">{{ post.title }}</span>
           <span class="content">{{ post.content }}</span>
           <span class="author">Written by {{ post.author }}</span>
-          <div v-for="counter in likeDislikeCommentData" :key="counter._id">
-            <p>{{ counter.comment_count }} likes</p>
-            <p>{{ counter.dislike_count }} dislikes</p>
-            <p>{{ counter.like_count }} comment</p>
+          <div class="voteSpan">
+            <span class="likes">{{ post.like_counter }} likes</span>
+            <span class="dislikes">{{ post.dislike_counter }} dislike</span>
+          </div>
+
+          <div class="vote" v-if="localStorageData">
+            <div>
+              <button
+                @click="toggleLike(post._id)"
+                class="voteBtn"
+                :class="{
+                  'like-active': buttonStates[post._id] === 1,
+                  'like-inactive': buttonStates[post._id] !== 1,
+                }"
+              >
+                <img src="../assets/like.png" alt="" class="voteImg" />
+              </button>
+            </div>
+            <div>
+              <button
+                @click="toggleDislike(post._id)"
+                class="voteBtn"
+                :class="{
+                  'dislike-active': buttonStates[post._id] === -1,
+                  'dislike-inactive': buttonStates[post._id] !== -1,
+                }"
+              >
+                <img src="../assets/dislike.png" alt="" class="voteImg" />
+              </button>
+            </div>
           </div>
           <button class="button buttonComment" @click="commentPost(post._id)">
             <p class="button-content">Comment</p>
@@ -27,37 +53,49 @@ export default {
   },
   data() {
     return {
-      likeDislikeCommentData: [],
+      buttonStates: {},
     };
   },
   methods: {
     commentPost(post) {
       this.$router.push({ path: `/comment/${post}`, params: { postId: post } });
     },
-    async likeDislikeComment(post) {
-      try {
-        const postId = post;
-        const response = await fetch(`http://127.0.0.1:5000/vote/${postId}`, {
-          method: "GET",
+    async toggleLike(postId) {
+      this.updateButtonState(postId, this.buttonStates[postId] === 1 ? 0 : 1);
+      await this.sendVote(postId, this.buttonStates[postId]);
+    },
+    async toggleDislike(postId) {
+      this.updateButtonState(postId, this.buttonStates[postId] === -1 ? 0 : -1);
+      await this.sendVote(postId, this.buttonStates[postId]);
+    },
+    updateButtonState(postId, newState) {
+      this.$set(this.buttonStates, postId, newState);
+    },
+    async sendVote(postId, vote) {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(
+        `http://127.0.0.1:5000/post/${postId}/vote`,
+        {
+          method: "POST",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "http:/localhost:8080",
           },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          body: JSON.stringify({
+            vote: vote,
+          }),
         }
+      );
 
-        const LDCData = await response.json();
-        this.likeDislikeCommentData = LDCData;
-      } catch (error) {
-        console.error("Veri alınamadı:", error);
+      if (!response.ok) {
+        console.error(`HTTP error! Status: ${response.status}`);
       }
     },
   },
-  mounted() {
-    console.log("postData:", this.postData);
+  computed: {
+    localStorageData() {
+      return localStorage.getItem("username");
+    },
   },
 };
 </script>

@@ -3,8 +3,7 @@ from models.user import User
 from models.post import Post
 
 
-class Comment_vote(Document):
-    _id = IntField()
+class Vote(Document):
     person = ReferenceField(User)
     postID = ReferenceField(Post)
-    comment = StringField()
+    vote = IntField()

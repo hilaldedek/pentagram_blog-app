@@ -8,9 +8,6 @@
       </div>
       <div>
         <div v-for="post in posts" :key="post._id" class="card">
-          <!-- <div class="image">
-              <img src="" class="img-fluid rounded-top" alt="" />
-            </div> -->
           <span class="title">{{ post.title }}</span>
           <span class="content">{{ post.content }}</span>
           <span class="author">{{ post.author }}</span>

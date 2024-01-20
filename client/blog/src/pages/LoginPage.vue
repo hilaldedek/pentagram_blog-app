@@ -34,7 +34,6 @@
 </template>
 
 <script>
-// import axios from "axios";
 import NavbarComponent from "@/components/NavbarComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
 

@@ -53,7 +53,6 @@ export default {
     async updatePost() {
       const getToken = localStorage.getItem("access_token");
       const postId = this.$route.params.postId;
-      console.log("POSTID", postId);
       const response = await fetch(`http://127.0.0.1:5000/post/${postId}`, {
         method: "PUT",
         headers: {

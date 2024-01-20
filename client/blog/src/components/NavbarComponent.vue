@@ -3,6 +3,9 @@
     <div class="main">
       <h1 class="header"><router-link to="/">Pentagram</router-link></h1>
       <div>
+        
+      </div>
+      <div v-if="!localStorageData">
         <router-link to="/login" class="buttonStyle"
           >Login/Register</router-link
         >
@@ -15,6 +18,9 @@
       </div>
       <div v-if="localStorageData">
         <button @click="logout" class="buttonStyle">Logout</button>
+      </div>
+      <div class="userSection" v-if="localStorageData">
+        <h2 class="user">Welcome {{localStorageData}}</h2>
       </div>
     </div>
   </div>
