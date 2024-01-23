@@ -44,6 +44,8 @@ Pentagram Blog App; It is a small-scale social media application.
  
 # Demo
 
+![loginregister](https://github.com/hilaldedek/pentagram_blog-app/assets/95539281/25273f07-4406-4749-b362-1c8a5ad0fcfc)
+
 ![createPost](https://github.com/hilaldedek/pentagram_blog-app/assets/95539281/c4e09113-4654-421c-ab70-da3d6834e717)
 
 ![post](https://github.com/hilaldedek/pentagram_blog-app/assets/95539281/8807c6ec-dfb0-4ebb-8459-8b0ea8a49ed6)
