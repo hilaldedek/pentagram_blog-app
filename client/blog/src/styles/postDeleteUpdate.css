@@ -112,3 +112,11 @@
 .buttons .update{
     background: var(--navbar-bg-color);
 }
+.titleInput{
+  font-family: "Lora", serif;
+}
+.contentInput{
+  font-family: "Lora", serif;
+  height: 100%;
+  width: auto;
+}

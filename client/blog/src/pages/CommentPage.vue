@@ -32,16 +32,16 @@
                   <span class="span"></span>
                 </div>
                 <div class="person">
-                  <img class="userImg" src="../assets/user.png" alt="">
+                  <img class="userImg" src="../assets/user.png" alt="" />
                   <p class="p">
-                  {{ comment.person }}
-                </p>
+                    {{ comment.person }}
+                  </p>
                 </div>
-                
+
                 <form
                   action=""
                   @submit.prevent="updateComment(comment._id)"
-                  v-show="comment.person === localStorageData"
+                  v-show="comment.person === localStorageData && updateFormId === comment._id"
                 >
                   <input
                     v-model="updatedComment"
@@ -83,6 +83,7 @@
 </template>
 
 <script>
+
 // import FooterComponent from "@/components/FooterComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue";
 
@@ -96,9 +97,8 @@ export default {
       comments: [],
       comment: "",
       updatedComment: "",
-      isClicked: false,
+      updateFormId:"",
       localStorageData: localStorage.getItem("username") || null,
-      activeCommentId: null,
     };
   },
   mounted() {
@@ -106,8 +106,7 @@ export default {
   },
   methods: {
     handleButtonClick(commentId) {
-      this.isClicked = !this.isClicked;
-      this.activeCommentId = commentId;
+      this.updateFormId = commentId;
     },
     async getCommentData() {
       try {

@@ -11,7 +11,8 @@
                 v-model="title"
                 required=""
                 type="text"
-                placeholder="title"
+                placeholder="Title"
+                class="titleInput"
               />
             </label>
             <label class="content">
@@ -19,7 +20,8 @@
                 v-model="content"
                 required=""
                 type="text"
-                placeholder="content"
+                placeholder="Content"
+                class="contentInput"
               />
             </label>
           </div>
@@ -43,6 +45,11 @@ export default {
     NavbarComponent,
     FooterComponent,
   },
+  props: ['postContent', 'postTitle'],
+  mounted() {
+    // Hedef sayfa yüklendiğinde props değerlerine erişebilirsiniz.
+    console.log(this.postContent, this.postTitle);
+  },
   data() {
     return {
       title: "",
@@ -56,7 +63,7 @@ export default {
       const response = await fetch(`http://127.0.0.1:5000/post/${postId}`, {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${getToken}`,
+          Authorization: `Bearer ${getToken}`,
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "http:/localhost:8080",
         },

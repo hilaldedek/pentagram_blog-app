@@ -4,7 +4,7 @@ from models.post import Post
 
 
 class Comment_vote(Document):
-    _id = IntField()
+    _id = SequenceField(primary_key=True)
     person = ReferenceField(User)
     postID = ReferenceField(Post)
     comment = StringField()
