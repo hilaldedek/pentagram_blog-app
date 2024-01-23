@@ -1,30 +1,44 @@
 # Pentagram Blog App
 
 Pentagram Blog App; It is a small-scale social media application.
+
 **In this project the user can:**
--User can register, log in, log out,
--User can share, update, delete posts,
--User can comment, update, delete,
--The user can like or dislike the posts,
+
+	-User can register, log in, log out,
+	
+	-User can share, update, delete posts,
+	
+	-User can comment, update, delete,
+	
+	-The user can like or dislike the posts,
 
 
 #  Getting started
 
  1. Clone the repo:
+
  `git clone https://github.com/hilaldedek/pentagram_blog-app.git`
  
- 2. Frontend:
-  `cd client\blog` 
+ 3. Frontend:
+  `cd client\blog`
+
   `yarn install` 
+  
   `npm run serve`
   
-3. Backend:
-   `cd api` 
-   `python -m venv env` 
-	Windows: `.\env\Scripts\activate`  
-	MacOS: `source env/bin/activate` 
-	`pip install requirements.txt`  
-	`flask --app app run --debug`
+5. Backend:
+ 
+   `cd api`
+   
+   `python -m venv env`
+    
+    Windows: `.\env\Scripts\activate`
+ 
+    MacOS: `source env/bin/activate`
+   
+    `pip install requirements.txt`
+    
+    `flask --app app run --debug`
 
  
 # Demo
