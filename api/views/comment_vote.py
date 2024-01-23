@@ -86,7 +86,7 @@ class CommentDetail(Resource):
 
 
 class CommentList(Resource):
-    def get(self,post_id):
+    def get(self, post_id):
         results = collectionComment.find({"postID": post_id})
         results_list = list(results)
         json_data = results_list
@@ -102,7 +102,9 @@ class VoteProcedure(Resource):
     def post(self, post_id):
         data = request.get_json()
         current_user_id = get_jwt_identity()  # current user
-        resultVote = collectionVote.find_one({"person": current_user_id, "postID": post_id})
+        resultVote = collectionVote.find_one(
+            {"person": current_user_id, "postID": post_id}
+        )
         dataVote = data.get("vote")
         resultPost = collectionPost.find_one({"_id": post_id})
         current_like_counter = resultPost.get("like_counter", 0)
@@ -171,7 +173,26 @@ class VoteProcedure(Resource):
                     {"_id": post_id},
                     {"$set": {"dislike_counter": current_dislike_counter + 1}},
                 )
-            meta = {"collection": "collectionVote"}  # Collection name to save the user to
+            meta = {
+                "collection": "collectionVote"
+            }  # Collection name to save the user to
             new_vote.save()
             return jsonify({"message": "vote saved successfully"})
         return jsonify()
+
+
+class VoteList(Resource):
+    @jwt_required()
+    @cross_origin()
+    def get(self):
+        current_user_id = get_jwt_identity()
+        results = collectionVote.find(
+            {"person": current_user_id},
+            {"_id": 0}
+        )
+        results_list = list(results)
+        json_data = results_list
+        if json_data is not None:
+            return jsonify(json_data)
+        else:
+            return jsonify({"message": "Vote data is not found"})

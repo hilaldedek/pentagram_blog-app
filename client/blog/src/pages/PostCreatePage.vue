@@ -12,6 +12,7 @@
                 required=""
                 type="text"
                 placeholder="Title"
+                class="titleInput"
               />
             </label>
             <label class="content">
@@ -20,6 +21,7 @@
                 required=""
                 type="text"
                 placeholder="Content"
+                class="contentInput"
               />
             </label>
           </div>
@@ -27,13 +29,11 @@
         </form>
       </div>
     </div>
-    <FooterComponent />
   </div>
 </template>
 
 <script>
 import NavbarComponent from "@/components/NavbarComponent.vue";
-import FooterComponent from "@/components/FooterComponent.vue";
 
 export default {
   name: "PostCreatePage",
@@ -45,7 +45,6 @@ export default {
   },
   components: {
     NavbarComponent,
-    FooterComponent,
   },
   methods: {
     async createPost() {

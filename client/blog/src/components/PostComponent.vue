@@ -97,7 +97,7 @@ export default {
           }),
         }
       );
-
+        window.location.reload()
       if (!response.ok) {
         console.error(`HTTP error! Status: ${response.status}`);
       }
