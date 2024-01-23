@@ -4,13 +4,13 @@ Pentagram Blog App; It is a small-scale social media application.
 
 **In this project the user can:**
 
-	-User can register, log in, log out,
+	-User can register, login, logout,
 	
 	-User can share, update, delete posts,
 	
 	-User can comment, update, delete,
 	
-	-The user can like or dislike the posts,
+	-User can like or dislike the posts,
 
 
 #  Getting started
