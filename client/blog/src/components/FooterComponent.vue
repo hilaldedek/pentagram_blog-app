@@ -1,11 +1,9 @@
-
 <template>
-    <div class="bottom">
-        <div toggleable="lg" type="dark" class="main">
-            <p>Copyright © {{ currentYear }} All Rights Reserved</p>
-        </div>
-          
+  <div class="bottom">
+    <div toggleable="lg" type="dark" class="main">
+      <p>Copyright © {{ currentYear }} All Rights Reserved</p>
     </div>
+  </div>
 </template>
 
 <script>
@@ -22,5 +20,4 @@ export default {
 };
 </script>
 
-<style src="../styles/footer.css" scoped>
-</style>
+<style src="../styles/footer.css" scoped></style>
