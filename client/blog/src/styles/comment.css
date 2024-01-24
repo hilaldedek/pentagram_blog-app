@@ -1,0 +1,242 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap");
+
+.commentForm {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+}
+.createComment {
+  width: 50%;
+  position: relative;
+  margin: auto;
+  border-radius: 10px;
+  margin: 5rem;
+  padding: 3rem;
+  background-color: #a87c7c82;
+}
+.createComment p {
+  font-size: 1.5rem;
+  color: #a87c7c;
+  font-family: "Kalnia", serif;
+  text-align: center;
+}
+.likePost p {
+  font-family: "Kalnia", serif;
+  font-weight: 700;
+  color: #3e3232;
+}
+.input {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  width: auto;
+  height: 2rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #fff;
+  background-color: rgba(28, 28, 30, 0.349);
+  box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.5), 0 0 0 0.15vw transparent;
+  border-radius: 0.4vw;
+  border: none;
+  outline: none;
+  padding: 0.4vw;
+  transition: 0.4s;
+}
+
+.input:hover {
+  box-shadow: 0 0 0 0.15vw rgba(135, 207, 235, 0.186);
+}
+
+.input:focus {
+  box-shadow: 0 0 0 0.15vw rgba(22, 28, 30, 0.186);
+}
+.button {
+  margin: 1rem;
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  border-radius: 1.5rem;
+  background: #bfc1b8;
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: "DM Serif Display", serif;
+}
+.buttonsDiv {
+  display: flex;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+.UpdateSendButton {
+  width: 5rem;
+}
+.buttonDelete::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(82.3deg, #304d30 10.8%, #163020 94.3%);
+  transition: all 0.475s;
+}
+
+.image {
+  background: rgb(241, 241, 241);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.mainCard {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.commentHeader {
+  font-family: "DM Serif Display", serif;
+  color: #092635;
+}
+.card {
+  width: 30rem;
+  height: auto;
+  background: #b6c4b6;
+  border-radius: 20px;
+  display: flex;
+  justify-content: left;
+  backdrop-filter: blur(10px);
+  transition: 0.5s ease-in-out;
+  margin: 1rem;
+}
+
+.card:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.textBox {
+  width: calc(100% - 90px);
+  margin-left: 10px;
+  color: #092635;
+  font-family: "Poppins" sans-serif;
+}
+
+.textContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.span {
+  font-size: 10px;
+}
+
+.h1 {
+  font-size: 16px;
+  font-weight: 900;
+  font-family: "Raleway", sans-serif;
+}
+
+.p {
+  font-size: 12px;
+  font-weight: lighter;
+}
+.userImg {
+  width: 1rem;
+  height: 1rem;
+  margin: 0.2rem;
+}
+.person{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.voteImg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.btnImg {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.btn {
+  border-radius: 10px;
+  padding: 0.2rem;
+  border: none;
+  margin: 0.5rem;
+  cursor: pointer;
+  background-color: #9595957d;
+}
+
+.heart-container .checkbox:checked ~ .svg-container .svg-filled {
+  display: block;
+}
+
+.heart-container .checkbox:checked ~ .svg-container .svg-celebrate {
+  display: block;
+}
+
+@keyframes keyframes-svg-filled {
+  0% {
+    transform: scale(0);
+  }
+
+  25% {
+    transform: scale(1.2);
+  }
+
+  50% {
+    transform: scale(1);
+    filter: brightness(1.5);
+  }
+}
+
+@keyframes keyframes-svg-celebrate {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    filter: brightness(1.5);
+  }
+
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .card {
+    width: 20rem;
+  }
+}

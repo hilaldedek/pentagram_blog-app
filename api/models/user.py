@@ -8,17 +8,18 @@ class User(UserMixin, Document):
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
 
-    # unique_emails = set()
-    # Password Hashing
-    def get_user_with_username(self, username):
-        if self.username == username:
-            return self
-        else:
-            return None
-
+# Password Hashing
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
     # Password Checking
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password, password) 
+    
+    @classmethod
+    def get_user_by_username(cls, username):
+        return cls.objects(username = username).first()
+    @classmethod
+    def get_user_by_email(cls, email):
+        return cls.objects(email = email).first()
+    
