@@ -27,7 +27,7 @@ Note: The backend is configured to run with a MongoDB database. Make sure to set
 
 """
 
-from flask import Flask, jsonify
+from flask import Flask
 from mongoengine import *
 from flask_jwt_extended import JWTManager
 from config import config

@@ -61,7 +61,7 @@ class Register(Resource):
         meta = {"collection": "user"}  # Collection name to save the user to
         new_user.save()  # Saving the user to the database
         # login()  # Ensuring that the registered user is logged in at the same time
-        return jsonify({"message": "Data saved successfully and successfuly logged in"})
+        return jsonify({"message": "User registration successfully."})
 
 
 class Logout(Resource):
