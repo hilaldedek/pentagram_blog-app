@@ -3,7 +3,7 @@ from models.user import User
 
 
 class Post(Document):
-    _id = IntField()
+    _id = SequenceField(primary_key=True)
     author = ReferenceField(User)
     title = StringField(required=True)
     content = StringField(required=True)

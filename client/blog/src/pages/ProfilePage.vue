@@ -14,7 +14,7 @@
           <span class="dateTime">{{ formatDateTime(post.dateTime) }}</span>
           <div>
             <div class="UDButtons">
-              <button @click="updatePost(post._id)" class="button buttonUpdate">
+              <button @click="updatePost(post)" class="button buttonUpdate">
                 <p class="button-content">Update</p>
               </button>
               <button class="button buttonDelete" @click="deletePost(post._id)">
@@ -75,7 +75,7 @@ export default {
       return new Date(dateTime).toLocaleString("tr-TR", options);
     },
     updatePost(post) {
-      this.$router.push({ path: `/post/${post}`, params: { postId: post } });
+      this.$router.push({ path: `/post/${post._id}`, props: { postContent: post.content, postTitle:post.title } });
     },
     async deletePost(post) {
       const getToken = localStorage.getItem("access_token");

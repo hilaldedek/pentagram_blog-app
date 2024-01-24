@@ -115,3 +115,11 @@
   cursor: pointer;
   font-family: "Raleway", sans-serif;
 }
+.titleInput{
+  font-family: "Lora", serif;
+}
+.contentInput{
+  font-family: "Lora", serif;
+  height: 100%;
+  width: auto;
+}

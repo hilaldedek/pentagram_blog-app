@@ -20,6 +20,7 @@ const routes = [
     path: "/post/:postId",
     name: "PostDeleteUpdate",
     component: PostDeleteUpdatePage,
+    props: true
   },
   {
     path: "/comment/:postId",

@@ -162,3 +162,8 @@
   justify-content: center;
   margin: 2rem;
 }
+.dateTime{
+  margin-top: 1rem;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+}

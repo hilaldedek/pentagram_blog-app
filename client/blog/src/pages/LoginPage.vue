@@ -23,19 +23,18 @@
           <span></span>
         </div>
         <div class="regButton">
+          <p>If you don't have an account </p>
           <router-link class="registerButton" to="/register"
             >Register</router-link
           >
         </div>
       </div>
     </div>
-    <FooterComponent />
   </div>
 </template>
 
 <script>
 import NavbarComponent from "@/components/NavbarComponent.vue";
-import FooterComponent from "@/components/FooterComponent.vue";
 
 export default {
   name: "LoginPage",
@@ -47,7 +46,6 @@ export default {
   },
   components: {
     NavbarComponent,
-    FooterComponent,
   },
   methods: {
     async login() {

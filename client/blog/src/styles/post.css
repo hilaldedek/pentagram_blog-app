@@ -31,6 +31,7 @@
 }
 .card .title {
   font-family: "Kalnia", serif;
+  text-align: center;
   font-size: 1.8rem;
   margin-top: 1rem;
   font-weight: 500;
@@ -66,19 +67,6 @@
   place-items: center;
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-}
-
-.pagination button {
-  padding: 0.6rem;
-  border-radius: 20px;
-  margin-bottom: 3rem;
-  color: #eef0e5;
-  background-color: #706233;
-  cursor: pointer;
-}
 .button {
   margin: 1rem;
   position: relative;
@@ -100,6 +88,11 @@
 .button-content {
   position: relative;
   z-index: 1;
+}
+.date{
+  margin-top: 1rem;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
 }
 .vote {
   margin: 0.4rem;

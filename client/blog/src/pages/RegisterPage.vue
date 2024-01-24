@@ -23,13 +23,11 @@
         </form>
       </div>
     </div>
-    <FooterComponent />
   </div>
 </template>
 
 <script>
 import NavbarComponent from "../components/NavbarComponent.vue";
-import FooterComponent from "@/components/FooterComponent.vue";
 
 export default {
   name: "RegisterPage",
@@ -42,7 +40,6 @@ export default {
   },
   components: {
     NavbarComponent,
-    FooterComponent,
   },
   methods: {
     async register() {

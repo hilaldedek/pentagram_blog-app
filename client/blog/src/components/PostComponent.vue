@@ -6,6 +6,7 @@
           <span class="title">{{ post.title }}</span>
           <span class="content">{{ post.content }}</span>
           <span class="author">Written by {{ post.author }}</span>
+          <span class="date">{{ formatDateTime(post.dateTime) }}</span>
           <div class="voteSpan">
             <span class="likes">{{ post.like_counter }} likes</span>
             <span class="dislikes">{{ post.dislike_counter }} dislike</span>
@@ -57,6 +58,16 @@ export default {
     };
   },
   methods: {
+    formatDateTime(dateTime) {
+      const date = new Date(dateTime);
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+
+      return `${day}.${month}.${year} ${hours}:${minutes}`;
+    },
     commentPost(post) {
       this.$router.push({ path: `/comment/${post}`, params: { postId: post } });
     },
@@ -86,7 +97,7 @@ export default {
           }),
         }
       );
-
+        window.location.reload()
       if (!response.ok) {
         console.error(`HTTP error! Status: ${response.status}`);
       }

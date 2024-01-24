@@ -2,9 +2,6 @@
   <div class="navbar">
     <div class="main">
       <h1 class="header"><router-link to="/">Pentagram</router-link></h1>
-      <div>
-        
-      </div>
       <div v-if="!localStorageData">
         <router-link to="/login" class="buttonStyle"
           >Login/Register</router-link
@@ -20,7 +17,7 @@
         <button @click="logout" class="buttonStyle">Logout</button>
       </div>
       <div class="userSection" v-if="localStorageData">
-        <h2 class="user">Welcome {{localStorageData}}</h2>
+        <h2 class="user">{{ localStorageData }}</h2>
       </div>
     </div>
   </div>
@@ -66,10 +63,10 @@ export default {
         if (response.ok) {
           localStorage.removeItem("access_token");
           localStorage.removeItem("username");
-          window.location.reload();
           if (this.$route.path !== "/") {
             this.$router.push("/");
           }
+          window.location.reload();
         } else {
           const data = await response.json();
           console.error("Logout error:", data);
