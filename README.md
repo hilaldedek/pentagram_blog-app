@@ -19,7 +19,7 @@ Pentagram Blog App; It is a small-scale social media application.
 
  `git clone https://github.com/hilaldedek/pentagram_blog-app.git`
  
- 3. Frontend:
+ 2. Frontend:
 
   `cd client\blog`
 
@@ -27,7 +27,7 @@ Pentagram Blog App; It is a small-scale social media application.
   
   `npm run serve`
   
-5. Backend:
+3. Backend:
  
    `cd api`
    
