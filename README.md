@@ -37,7 +37,7 @@ Pentagram Blog App; It is a small-scale social media application.
  
     MacOS: `source env/bin/activate`
    
-    `pip install requirements.txt`
+    `pip install -r requirements.txt`
     
     `flask --app app run --debug`
 
