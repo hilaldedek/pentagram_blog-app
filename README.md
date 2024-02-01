@@ -17,31 +17,31 @@ Pentagram Blog App; It is a small-scale social media application.
 
  1. Clone the repo:
 
- `git clone https://github.com/hilaldedek/pentagram_blog-app.git`
+ -`git clone https://github.com/hilaldedek/pentagram_blog-app.git`
  
  2. Frontend:
 
-  `cd client\blog`
+  -`cd client\blog`
 
-  `yarn install` 
+  -`yarn install` 
   
-  `npm run serve`
+  -`npm run serve`
   
 3. Backend:
  
-   `cd api`
+   -`cd api`
    
-   `python -m venv env`
+   -`python -m venv env`
     
-    Windows: `.\env\Scripts\activate`
+   -Windows: `.\env\Scripts\activate`
  
-    MacOS: `source env/bin/activate`
+   -MacOS: `source env/bin/activate`
    
-    `pip install -r requirements.txt`
+    -`pip install -r requirements.txt`
    
-    `touch config.py `
+    -`touch config.py `
 
-    Create a config.py file in the api directory and paste the following codes into it. Don't forget to create your own key in YOUR_SECRET_KEY! :
+    -Create a config.py file in the api directory and paste the following codes into it. Don't forget to create your own key in YOUR_SECRET_KEY! :
    
     ```
     from datetime import timedelta
@@ -57,7 +57,7 @@ Pentagram Blog App; It is a small-scale social media application.
      config = DevelopmentConfig
     ```
     
-    `flask --app app run --debug`
+    -`flask --app app run --debug`
 
  
 # Demo
