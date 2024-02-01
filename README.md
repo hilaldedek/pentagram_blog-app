@@ -41,7 +41,7 @@ Pentagram Blog App; It is a small-scale social media application.
    
     `touch config.py `
 
-    Into the config.py file and paste this code:
+    Create a config.py file in the api directory and paste the following codes into it. Don't forget to create your own key in YOUR_SECRET_KEY! :
    
     ```
     from datetime import timedelta
