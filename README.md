@@ -42,6 +42,7 @@ Pentagram Blog App; It is a small-scale social media application.
     `touch config.py `
 
     Into the config.py file and paste this code:
+   
     `from datetime import timedelta
      class BaseConfig(object):
 	    DEBUG = False
