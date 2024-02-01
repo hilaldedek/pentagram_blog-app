@@ -38,6 +38,23 @@ Pentagram Blog App; It is a small-scale social media application.
     MacOS: `source env/bin/activate`
    
     `pip install -r requirements.txt`
+   
+    `touch config.py `
+
+    Into the config.py file and paste this code:
+   `	from datetime import timedelta
+	class BaseConfig(object):
+	    DEBUG = False
+	    JWT_SECRET_KEY = 'YOUR_SECRET_KEY'
+	    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+
+	class DevelopmentConfig(BaseConfig):
+	    DEBUG = True
+
+	class ProductionConfig(BaseConfig):
+	    DEBUG = False
+	
+	config = DevelopmentConfig`
     
     `flask --app app run --debug`
 
