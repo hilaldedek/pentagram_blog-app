@@ -42,6 +42,7 @@ Pentagram Blog App; It is a small-scale social media application.
    -Create a config.py file in the api directory and paste the following codes into it. Don't forget to create your own key in YOUR_SECRET_KEY! :
    
     ```
+    
     from datetime import timedelta
      class BaseConfig(object):
 	    DEBUG = False
@@ -53,6 +54,7 @@ Pentagram Blog App; It is a small-scale social media application.
      class ProductionConfig(BaseConfig):
 	    DEBUG = False
      config = DevelopmentConfig
+     
     ```
     
    -`flask --app app run --debug`
