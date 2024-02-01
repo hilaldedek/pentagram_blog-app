@@ -27,7 +27,7 @@ Pentagram Blog App; It is a small-scale social media application.
   
   -`npm run serve`
   
-3. Backend:
+ 3. Backend:
  
    -`cd api`
    
@@ -58,6 +58,13 @@ Pentagram Blog App; It is a small-scale social media application.
     ```
     
     -`flask --app app run --debug`
+
+ 4.Database:
+
+ -Install MongoDB step by step according to the platform you use from the link below:
+    
+   ![Install MongoDB](https://www.mongodb.com/docs/manual/installation/)
+
 
  
 # Demo
