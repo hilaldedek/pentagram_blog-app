@@ -37,11 +37,9 @@ Pentagram Blog App; It is a small-scale social media application.
  
    -MacOS: `source env/bin/activate`
    
-    -`pip install -r requirements.txt`
-   
-    -`touch config.py `
+   -`pip install -r requirements.txt`
 
-    -Create a config.py file in the api directory and paste the following codes into it. Don't forget to create your own key in YOUR_SECRET_KEY! :
+   -Create a config.py file in the api directory and paste the following codes into it. Don't forget to create your own key in YOUR_SECRET_KEY! :
    
     ```
     from datetime import timedelta
@@ -57,7 +55,7 @@ Pentagram Blog App; It is a small-scale social media application.
      config = DevelopmentConfig
     ```
     
-    -`flask --app app run --debug`
+   -`flask --app app run --debug`
 
  4.Database:
 
