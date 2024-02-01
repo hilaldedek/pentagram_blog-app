@@ -63,7 +63,7 @@ Pentagram Blog App; It is a small-scale social media application.
 
  -Install MongoDB step by step according to the platform you use from the link below:
     
-      [Install MongoDB](https://www.mongodb.com/docs/manual/installation/)
+   [Install MongoDB](https://www.mongodb.com/docs/manual/installation/)
 
 
  
