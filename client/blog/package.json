@@ -12,7 +12,8 @@
     "core-js": "^3.8.3",
     "oh-vue-icons": "^1.0.0-rc3",
     "vue": "^2.7.16",
-    "vue-router": "^3.6.5"
+    "vue-router": "^3.6.5",
+    "yarn": "^1.22.21"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

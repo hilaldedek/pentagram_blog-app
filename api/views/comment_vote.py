@@ -186,10 +186,7 @@ class VoteList(Resource):
     @cross_origin()
     def get(self):
         current_user_id = get_jwt_identity()
-        results = collectionVote.find(
-            {"person": current_user_id},
-            {"_id": 0}
-        )
+        results = collectionVote.find({"person": current_user_id}, {"_id": 0})
         results_list = list(results)
         json_data = results_list
         if json_data is not None:

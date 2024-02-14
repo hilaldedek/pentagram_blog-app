@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  backend:
+    build: ./api  # backend için Dockerfile'ın bulunduğu dizin
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database  # backend servisinin database servisine bağımlı olduğunu belirtiyoruz
+
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+
+  frontend:
+    build: ./client/blog
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - backend

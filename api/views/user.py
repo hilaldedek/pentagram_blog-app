@@ -43,7 +43,7 @@ class Login(Resource):
                 200,
             )
         return jsonify({"error": "Invalid username or password"}), 400
-    
+
 
 class Register(Resource):
     def post(self):

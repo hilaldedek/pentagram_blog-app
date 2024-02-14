@@ -20,6 +20,7 @@ try:
 except Exception as error:
     jsonify({"message": ConnectionError})
 
+
 def get_formatted_post():
     posts = list(collectionPost.find().sort("dateTime", -1))
     formatted_posts = [
