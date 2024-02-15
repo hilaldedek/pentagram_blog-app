@@ -39,14 +39,14 @@ from views.comment_vote import *
 
 
 app = Flask(__name__)
-CORS(app, origins="http://localhost:8080")
+CORS(app, supports_credentials=True, origins="*")
 api = Api(app)
 app.config.from_object(config)
 
 jwt = JWTManager(app)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0")
 
 
 def mongodb():

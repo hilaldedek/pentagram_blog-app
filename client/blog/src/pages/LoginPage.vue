@@ -23,7 +23,7 @@
           <span></span>
         </div>
         <div class="regButton">
-          <p>If you don't have an account </p>
+          <p>If you don't have an account</p>
           <router-link class="registerButton" to="/register"
             >Register</router-link
           >
@@ -54,7 +54,6 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "http:/localhost:8080",
           },
           body: JSON.stringify({
             username: this.username,
