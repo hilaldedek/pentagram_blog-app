@@ -9,4 +9,6 @@ RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
+ENV MONGO_URI=mongodb://pentagram_db:27017/pentagram_db
+
 CMD ["python", "app.py"]
