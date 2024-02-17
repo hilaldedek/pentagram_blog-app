@@ -65,7 +65,7 @@ export default {
         headers: {
           Authorization: `Bearer ${getToken}`,
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "http:/localhost:8080",
+          "Access-Control-Allow-Origin": "http:/localhost:80",
         },
         body: JSON.stringify({
           title: this.title,

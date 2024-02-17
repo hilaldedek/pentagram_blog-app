@@ -117,7 +117,7 @@ export default {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "http:/localhost:8080",
+              "Access-Control-Allow-Origin": "http:/localhost:80",
             },
           }
         );
@@ -143,7 +143,7 @@ export default {
             headers: {
               Authorization: `Bearer ${getToken}`,
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "http:/localhost:8080",
+              "Access-Control-Allow-Origin": "http:/localhost:80",
             },
             body: JSON.stringify({
               comment: this.comment,
@@ -172,7 +172,7 @@ export default {
             headers: {
               Authorization: `Bearer ${getToken}`,
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "http:/localhost:8080",
+              "Access-Control-Allow-Origin": "http:/localhost:80",
             },
             body: JSON.stringify({
               comment: this.updatedComment,
@@ -200,7 +200,7 @@ export default {
             headers: {
               Authorization: `Bearer ${getToken}`,
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "http:/localhost:8080",
+              "Access-Control-Allow-Origin": "http:/localhost:80",
             },
           }
         );
