@@ -1,3 +1,4 @@
+import os
 from flask import jsonify, request
 from pymongo import MongoClient
 from mongoengine import *
@@ -12,14 +13,14 @@ from flask_jwt_extended import (
 from flask_cors import cross_origin
 from flask_restful import Resource
 
-client = MongoClient("mongodb://localhost:27017/?directConnection=true")
+client = MongoClient(os.getenv("MONGO_URI","mongodb://localhost:27017/?directConnection=true"))
 database = client["pentagram_db"]
 collectionUser = database["user"]
 collectionToken = database["token_block_list"]
-try:
-    connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-except Exception as error:
-    jsonify({"message": ConnectionError})
+# try:
+#     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
+# except Exception as error:
+#     jsonify({"message": ConnectionError})
 
 
 class Login(Resource):
@@ -61,7 +62,7 @@ class Register(Resource):
         meta = {"collection": "user"}  # Collection name to save the user to
         new_user.save()  # Saving the user to the database
         # login()  # Ensuring that the registered user is logged in at the same time
-        return jsonify({"message": "User registration successfully."})
+        return jsonify({"message": "User registration successfully."}),200
 
 
 class Logout(Resource):

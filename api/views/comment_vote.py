@@ -1,3 +1,4 @@
+import os
 from flask import jsonify, request
 from pymongo import MongoClient
 from mongoengine import *
@@ -10,15 +11,15 @@ from flask_jwt_extended import (
 from flask_cors import cross_origin
 from flask_restful import Resource
 
-client = MongoClient("mongodb://localhost:27017/?directConnection=true")
+client = MongoClient(os.getenv("MONGO_URI","mongodb://localhost:27017/?directConnection=true"))
 database = client["pentagram_db"]
 collectionPost = database["post"]
 collectionComment = database["comment_vote"]
 collectionVote = database["vote"]
-try:
-    connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-except Exception as error:
-    jsonify({"message": ConnectionError})
+# try:
+#     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
+# except Exception as error:
+#     jsonify({"message": ConnectionError})
 
 
 def get_comment_detail_by_user(comment_id, user_id):
@@ -45,9 +46,9 @@ class CommentCreate(Resource):
                     "collection": "comment_vote"
                 }  # Collection name to save the user to
                 new_comment.save()
-                return jsonify({"message": "Comment saved successfully"})
+                return jsonify({"message": "Comment saved successfully"}),200
             else:
-                return jsonify({"message": "Post is not found"})
+                return jsonify({"message": "Post is not found"}),404
 
 
 class CommentDetail(Resource):

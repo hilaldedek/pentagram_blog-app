@@ -11,5 +11,5 @@ class Post(Document):
     updated = BooleanField()
     dateTime = DateTimeField()
     updateTime = DateTimeField()
-    like_counter=IntField(min_value=0)
-    dislike_counter=IntField(min_value=0)
+    like_counter = IntField(min_value=0)
+    dislike_counter = IntField(min_value=0)
