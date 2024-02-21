@@ -38,7 +38,7 @@ from views.user import *
 from views.post import *
 from views.comment_vote import *
 
-
+  
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins="*", host=8000)
 api = Api(app)

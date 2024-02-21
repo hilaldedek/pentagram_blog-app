@@ -46,7 +46,7 @@ class CommentCreate(Resource):
                     "collection": "comment_vote"
                 }  # Collection name to save the user to
                 new_comment.save()
-                return jsonify({"message": "Comment saved successfully"}),200
+                return jsonify({"message": "Comment saved successfully","status":"200"}),200
             else:
                 return jsonify({"message": "Post is not found"}),404
 
@@ -73,7 +73,7 @@ class CommentDetail(Resource):
             collectionComment.update_one({"_id": comment_id}, {"$set": data})
             return jsonify({"msg": "comment updated successfully"}), 200
         else:
-            return jsonify({"msg": "This comment does not belong to you"})
+            return jsonify({"msg": "This comment does not belong to you"}),403
 
     @jwt_required()
     def delete(self, comment_id):
