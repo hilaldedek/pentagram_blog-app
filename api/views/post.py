@@ -1,5 +1,5 @@
 import os
-from flask import jsonify, request
+from flask import jsonify, make_response, request
 from pymongo import MongoClient
 from mongoengine import *
 from models.post import Post
@@ -53,7 +53,10 @@ class PostList(Resource):
     @cross_origin()
     def get(self):
         posts = get_formatted_post()
-        return (jsonify({"posts": posts}), 200)
+        return make_response(
+            jsonify({"posts": posts, "status": "200"}),
+            200,
+        )
 
 
 class PostCreate(Resource):
@@ -74,7 +77,16 @@ class PostCreate(Resource):
         meta = {"collection": "post"}  # Collection name to save the user to
         new_post.save()
         post_id = str(new_post.id)
-        return jsonify({"message": "Post created successfully", "post_id": post_id})
+        return make_response(
+            jsonify(
+                {
+                    "message": "Post created successfully",
+                    "post_id": post_id,
+                    "status": "201",
+                }
+            ),
+            201,
+        )
 
 
 class UserPost(Resource):
@@ -89,7 +101,10 @@ class UserPost(Resource):
         if json_data is not None:
             return json_data
         else:
-            return jsonify({"message": "Posts is not found"})
+            return make_response(
+                jsonify({"message": "Posts is not found", "status": "404"}),
+                404,
+            )
 
 
 class PostDetail(Resource):
@@ -101,9 +116,17 @@ class PostDetail(Resource):
         if results.__len__() != 0:
             data = request.get_json()
             collectionPost.update_one({"_id": post_id}, {"$set": data})
-            return jsonify({"msg": "post updated successfully"}), 200
+            return make_response(
+                jsonify({"message": "post updated successfully", "status": "200"}),
+                200,
+            )
         else:
-            return jsonify({"msg": "This post does not belong to you"}), 403
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
 
     @jwt_required()
     def delete(self, post_id):
@@ -117,6 +140,7 @@ class PostDetail(Resource):
                 {"postID": post_id}
             )  # If the post is deleted, the comments made on the post will be deleted.
             collectionVote.delete_many({"postID": post_id})
-            return jsonify({"message": "Post deleted successfully"})
-        else:
-            return jsonify({"message": "Post is not found"})
+            return make_response(
+                jsonify({"message": "Post deleted successfully", "status": "200"}),
+                200,
+            )

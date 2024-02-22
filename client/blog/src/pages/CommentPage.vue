@@ -41,7 +41,10 @@
                 <form
                   action=""
                   @submit.prevent="updateComment(comment._id)"
-                  v-show="comment.person === localStorageData && updateFormId === comment._id"
+                  v-show="
+                    comment.person === localStorageData &&
+                    updateFormId === comment._id
+                  "
                 >
                   <input
                     v-model="updatedComment"
@@ -83,7 +86,6 @@
 </template>
 
 <script>
-
 // import FooterComponent from "@/components/FooterComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue";
 
@@ -97,7 +99,7 @@ export default {
       comments: [],
       comment: "",
       updatedComment: "",
-      updateFormId:"",
+      updateFormId: "",
       localStorageData: localStorage.getItem("username") || null,
     };
   },
@@ -117,7 +119,7 @@ export default {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "http:/localhost:80",
+              "Access-Control-Allow-Origin": "*",
             },
           }
         );

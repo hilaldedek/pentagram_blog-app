@@ -91,13 +91,14 @@ export default {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
           },
           body: JSON.stringify({
             vote: vote,
           }),
         }
       );
-        window.location.reload()
+      window.location.reload();
       if (!response.ok) {
         console.error(`HTTP error! Status: ${response.status}`);
       }

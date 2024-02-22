@@ -1,5 +1,5 @@
 import os
-from flask import jsonify, request
+from flask import jsonify, make_response, request
 from pymongo import MongoClient
 from mongoengine import *
 from models.user import User
@@ -13,7 +13,9 @@ from flask_jwt_extended import (
 from flask_cors import cross_origin
 from flask_restful import Resource
 
-client = MongoClient(os.getenv("MONGO_URI","mongodb://localhost:27017/?directConnection=true"))
+client = MongoClient(
+    os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
+)
 database = client["pentagram_db"]
 collectionUser = database["user"]
 collectionToken = database["token_block_list"]
@@ -52,7 +54,9 @@ class Register(Resource):
         userCheckUsername = User.get_user_by_username(username=data.get("username"))
         userCheckEmail = User.get_user_by_email(email=data.get("email"))
         if userCheckUsername or userCheckEmail is not None:
-            return jsonify({"error": "User already exist"})
+            return make_response(
+            jsonify({"message": "User already exist","status":"409"}), 409
+        )
         new_user = User(
             username=data.get("username"),
             email=data.get("email"),
@@ -62,7 +66,9 @@ class Register(Resource):
         meta = {"collection": "user"}  # Collection name to save the user to
         new_user.save()  # Saving the user to the database
         # login()  # Ensuring that the registered user is logged in at the same time
-        return jsonify({"message": "User registration successfully."}),200
+        return make_response(
+            jsonify({"message": "User registration successfully.","status":"201"}), 201
+        )
 
 
 class Logout(Resource):
