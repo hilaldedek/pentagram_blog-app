@@ -35,217 +35,281 @@ def client():
 
 
 first_user_data = {
-    "username": "fatihsultan",
-    "email": "fsmehmet1453@gmail.com",
-    "password": "fatih.1453!istanbul",
+    "username": "user1",
+    "email": "example@gmail.com",
+    "password": "test1",
 }
 first_user_login_data = {
-    "username": "fatihsultan",
-    "password": "fatih.1453!istanbul",
+    "username": "user1",
+    "password": "test1",
+}
+first_user_login_data_wrong_username = {
+    "username": "user12",
+    "password": "test1",
+}
+first_user_login_data_wrong_password = {
+    "username": "user1",
+    "password": "test12",
+}
+first_user_login_data_wrong_password_and_email = {
+    "username": "user12",
+    "password": "test12",
 }
 second_user_data = {
-    "username": "yavuzsultanselim",
-    "email": "ysselim@gmail.com",
-    "password": "yavuz.123sultan!selim",
+    "username": "user2",
+    "email": "example2@gmail.com",
+    "password": "test2",
 }
 
 post_data = {
     "title": "Snow-white",
     "content": "abc",
 }
-update_post_data = {
+update_post_data1 = {
+    "author": "user1",
+    "title": "Cinderella",
+    "content": "def",
+}
+update_post_data2 = {
+    "author": "user2",
     "title": "Cinderella",
     "content": "def",
 }
 
-comment_data = {"comment": "it's very nice!"}
+comment_data1 = {"person": "user1", "comment": "it's very nice!"}
+
+comment_data2 = {"comment": "it's very nice!"}
+
 
 update_comment_data = {"comment": "this comment updated!"}
 
 
-@pytest.fixture
-def test_user():
-    user = User(username="user1", email="test@example.com", password="test")
-    user.save()
-    return user
-
-
-@pytest.fixture
-def test_post_1():
-    post = Post(content="test_post1", title="test post 1", author="user1")
-    post.save()
-    return post
-
-
-@pytest.fixture
-def test_post_2():
-    post = Post(content="test_post2", title="test post 2", author="user2")
-    post.save()
-    return post
-
-
-@pytest.fixture()
-def register_user(client):
-    with app.test_client() as client:
-        register_response = client.post("/user/auth/register", json=first_user_data)
-        if register_response.status_code == 200:
-            return jsonify({"message": "User registration successfully."}), 200
-        else:
-            return None
-
-
-@pytest.fixture()
-def login_user(test_user, client):
-    with app.test_client() as client:
-        print(test_user.username)
-        login_response = client.post(
-            "/user/auth/login", json={"username": "user1", "password": "test"}
-        )
-        print("login_response: ", login_response)
-        if login_response.status_code == 200:
-            access_token = login_response.json["tokens"]["access token"]
-            return access_token
-        else:
-            return None
-
-
-@pytest.fixture()
-def create_post(client, login_user):
-    with app.test_client() as client:
-        access_token = login_user
-        headers = {"Authorization": f"Bearer {access_token}"}
-        post_response = client.post("/post", json=post_data, headers=headers)
-        if post_response.status_code == 200:
-            return json.loads(post_response)
-        else:
-            return jsonify({"error": "Posting failed"}), 400
-
-
-def test_user_login_and_register(client, login_user):
+def test_user_register(client):
     with app.test_client():
-        assert login_user is not None
+        response = client.post("/user/auth/register", json=first_user_data)
+        assert response.status_code == 201
+
+
+def test_duplicate_user_register(client):
+    with app.test_client():
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post("/user/auth/register", json=first_user_data)
+        assert response.status_code == 409
+
+
+def test_user_login_successfuly(client):
+    with app.test_client():
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+
+
+def test_user_login_failure(client):
+    with app.test_client():
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post(
+            "/user/auth/login", json=first_user_login_data_wrong_password
+        )
+        assert response.status_code == 400
+        response = client.post(
+            "/user/auth/login", json=first_user_login_data_wrong_username
+        )
+        assert response.status_code == 400
+        response = client.post(
+            "/user/auth/login", json=first_user_login_data_wrong_password_and_email
+        )
+        assert response.status_code == 400
 
 
 # The user can view posts on the home page whether he or she is logged in or not.
-def test_get_formatted_post(client):
+def test_get_all_post(client):
     with app.test_client() as client:
         response = client.get("/")
         assert response.status_code == 200
         assert "posts" in json.loads(response.data)
 
 
+# POST VIEW
+def test_post_view(client):
+    with app.test_client() as client:
+        response = client.get("/user/post")
+        assert response.status_code == 401
+    with app.test_client() as client:
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        access_token = json.loads(response.data)["tokens"]["access token"]
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        response = client.get("/user/post", headers=headers)
+        assert response.status_code == 200
+
+
 # POST CREATE
-def test_post_create(client, login_user, create_post):
+def test_post_create(client):
     # If the user is not logged in, she/he cannot create a new post.
     with app.test_client() as client:
         response = client.post("/post", data=post_data)
         assert response.status_code == 401
     # If the user is logged in, she/he can create a new post.
     with app.test_client() as client:
-        if login_user:
-            create_post_response = create_post
-            print(create_post_response)
-            create_post_response_to_json = json.loads(create_post_response)
-            assert create_post_response_to_json.status_code == 200
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        access_token = json.loads(response.data)["tokens"]["access token"]
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        response = client.post("/post", json=post_data, headers=headers)
+        # response_data = response.json
+        # post_id = response_data.get("post_id")
+        # print("RESPONSE DATA: ", post_id)
+        assert response.status_code == 201
 
 
-# # If the user is not logged in, she/he cannot view her/his own post.
-# def test_get_user_posts():
-#     with app.test_client() as client:
-#         response = client.get("/user/post")
-#         assert response.status_code == 401
+def test_update_post(client):
+    # If the user is not logged in, she/he cannot update her/his own post.
+    # with app.test_client() as client:
+    #     response = client.put(f"/post/{post_id}", json=update_post_data)
+    #     assert response.status_code == 401
+    with app.test_client() as client:
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        access_token = json.loads(response.data)["tokens"]["access token"]
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        response = client.post("/post", json=post_data, headers=headers)
+        assert response.status_code == 201
+        post_id = json.loads(response.data)["post_id"]
+        print("RESPONSE DATA: ", post_id)
+        response = client.put(
+            f"/post/{post_id}", json=update_post_data2, headers=headers
+        )
+        assert response.status_code == 403
+        # response = client.put(
+        #     f"/post/{post_id}", json=update_post_data1, headers=headers
+        # )
+        # assert response.status_code == 200
 
 
-# def test_update_post(create_user):
-
-#     with app.test_client() as client:
-#         login_response = client.post(
-#             "/user/auth/login",
-#             json={
-#                 "username": first_user_data.get("username"),
-#                 "password": first_user_data.get("password"),
-#             },
-#         )
-#         assert login_response.status_code == 200
-#         access_token = json.loads(login_response.data)["tokens"]["access token"]
-#         headers = {
-#             "Authorization": f"Bearer {access_token}",
-#             "Content-Type": "application/json",
-#         }
-#         response = client.post("/post", json=post_data, headers=headers)
-#         print("RESPONSE: ", json.loads(response.data)["post_id"])
-#         assert response.status_code == 200
-#         post_id = json.loads(response.data)["post_id"]
-#         response = client.put(
-#             f"/post/{post_id}", json=update_post_data, headers=headers
-#         )
-#         assert response.status_code == 200
-#     # If the user is not logged in, she/he cannot update her/his own post.
-#     with app.test_client() as client:
-#         response = client.put(f"/post/{post_id}", json=update_post_data)
-#         assert response.status_code == 401
-#     # The user cannot update a post that does not belong to him/her.
-#     with app.test_client() as client:
-#         register_response = client.post(
-#             "/user/auth/register",
-#             json=first_user_data,
-#         )
-#         assert register_response.status_code == 200
-#         login_response = client.post(
-#             "/user/auth/login",
-#             json={
-#                 "username": second_user_data.get("username"),
-#                 "password": second_user_data.get("password"),
-#             },
-#         )
-#         assert login_response.status_code == 200
-#         access_token = json.loads(login_response.data)["tokens"]["access token"]
-#         headers = {"Authorization": f"Bearer {access_token}"}
-#         response = client.put(
-#             f"/post/{post_id}", json=update_post_data, headers=headers
-#         )
-#         assert response.status_code == 403
+def test_delete_post(client):
+    with app.test_client() as client:
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        access_token = json.loads(response.data)["tokens"]["access token"]
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        response = client.post("/post", json=post_data, headers=headers)
+        assert response.status_code == 201
+        post_id = json.loads(response.data)["post_id"]
+        print("RESPONSE DATA: ", post_id)
+        response = client.delete(f"/post/{post_id}", headers=headers)
+        assert response.status_code == 200
 
 
-# def test_delete_post(register_user, login_user):
-#     # If the user is not logged in, the delete operation cannot be performed.
-#     with app.test_client() as client:
-#         result = Post.objects()
-#         post_id = result.id
-#         response = client.delete(f"/post/{result.id}")
-#         assert response.status_code == 401
-
-#     with app.test_client() as client:
-#         register_response = register_user()
-#         assert register_response.status_code == 200
-#         login_response = login_user()
-#         assert login_response.status_code == 200
-#         access_token = json.loads(login_response.data)["tokens"]["access token"]
-#         headers = {"Authorization": f"Bearer {access_token}"}
-#         result = Post.objects(author=first_user_data.get("username"))
-#         print(result)
-#         post_id = result.id
-#         response = client.delete(f"/post/{post_id}", headers=headers)
-#         assert response.status_code == 200
-
-
-# # User can view comments whether logged in or not
-# def test_get_user_comments():
-#     with app.test_client() as client:
-#         result = User.objects(username=first_user_data.get("username"))
-#         print(result)
-#         post_id = result.id
-#         response = client.get(f"/comment-list/{post_id}")
-#         assert response.status_code == 200
+# User can view comments whether logged in or not
+def test_get_user_comments(client):
+    with app.test_client() as client:
+        new_post = Post(
+            _id=1,
+            author=post_data.get("author"),
+            content=post_data.get("content"),
+            title=post_data.get("title"),
+        )
+        new_post.save()
+        new_comment = Comment_vote(
+            person=comment_data1.get("person"),
+            postID=1,
+            comment=comment_data1.get("comment"),
+        )
+        new_comment.save()
+        result = Post.objects().first()
+        print(result)
+        post_id = result.id
+        response = client.get(f"/comment-list/{post_id}")
+        assert response.status_code == 200
 
 
-# def test_create_comment(create_user):
-#     # if user is not logged in cannot create comment
-#     with app.test_client() as client:
-#         result = Post.objects.get()
-#         post_id = result.id
-#         response = client.post(f"/post/{post_id}/comment", json=post_data)
-#         assert response.status_code == 401
+def test_create_comment():
+    # if user is not logged in cannot create comment
+    with app.test_client() as client:
+        result = Post.objects.get()
+        post_id = result.id
+        response = client.post(f"/post/{post_id}/comment", json=post_data)
+        assert response.status_code == 401
+        new_user = User(
+            username=first_user_data.get("username"),
+            email=first_user_data.get("email"),
+            password=first_user_data.get("password"),
+        )
+        new_user.set_password(password=first_user_data.get("password"))
+        new_user.save()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        access_token = json.loads(response.data)["tokens"]["access token"]
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        response = client.post("/post", json=post_data, headers=headers)
+        assert response.status_code == 201
+        post_id = json.loads(response.data)["post_id"]
+        print("RESPONSE DATA: ", post_id)
+        response = client.post(
+            f"/post/{post_id}/comment", json=comment_data2, headers=headers
+        )
+        assert response.status_code == 200
 
 
 # def test_update_comment():

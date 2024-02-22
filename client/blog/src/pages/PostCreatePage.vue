@@ -55,7 +55,7 @@ export default {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            "Access-Control-Allow-Origin": "http:/localhost:80",
+            "Access-Control-Allow-Origin": "*",
           },
           body: JSON.stringify({
             title: this.title,

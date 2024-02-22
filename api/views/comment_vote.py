@@ -1,5 +1,5 @@
 import os
-from flask import jsonify, request
+from flask import jsonify, make_response, request
 from pymongo import MongoClient
 from mongoengine import *
 from models.comment_vote import Comment_vote
@@ -11,7 +11,9 @@ from flask_jwt_extended import (
 from flask_cors import cross_origin
 from flask_restful import Resource
 
-client = MongoClient(os.getenv("MONGO_URI","mongodb://localhost:27017/?directConnection=true"))
+client = MongoClient(
+    os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
+)
 database = client["pentagram_db"]
 collectionPost = database["post"]
 collectionComment = database["comment_vote"]
@@ -46,9 +48,10 @@ class CommentCreate(Resource):
                     "collection": "comment_vote"
                 }  # Collection name to save the user to
                 new_comment.save()
-                return jsonify({"message": "Comment saved successfully","status":"200"}),200
-            else:
-                return jsonify({"message": "Post is not found"}),404
+                return make_response(
+                    jsonify({"message": "Comment saved successfully", "status": "200"}),
+                    200,
+                )
 
 
 class CommentDetail(Resource):
@@ -61,7 +64,9 @@ class CommentDetail(Resource):
         if json_data is not None:
             return json_data
         else:
-            return jsonify({"message": "Comment is not found"})
+            return make_response(
+                jsonify({"message": "Comment is not found", "status": "404"}), 404
+            )
 
     @jwt_required()
     @cross_origin()
@@ -71,9 +76,17 @@ class CommentDetail(Resource):
         if comments.__len__() != 0:
             data = request.get_json()
             collectionComment.update_one({"_id": comment_id}, {"$set": data})
-            return jsonify({"msg": "comment updated successfully"}), 200
+            return make_response(
+                jsonify({"message": "comment updated successfully", "status": "200"}),
+                200,
+            )
         else:
-            return jsonify({"msg": "This comment does not belong to you"}),403
+            return make_response(
+                jsonify(
+                    {"message": "This comment does not belong to you", "status": "403"}
+                ),
+                403,
+            )
 
     @jwt_required()
     def delete(self, comment_id):
@@ -83,7 +96,9 @@ class CommentDetail(Resource):
             collectionComment.delete_one(
                 {"_id": comment_id}
             )  # deleting the data whose id is given
-        return jsonify({"message": "Comment deleted successfully"})
+        return make_response(
+            jsonify({"message": "Comment deleted successfully", "status": "200"}), 200
+        )
 
 
 class CommentList(Resource):
@@ -94,7 +109,9 @@ class CommentList(Resource):
         if json_data is not None:
             return jsonify(json_data)
         else:
-            return jsonify({"message": "Post is not found"})
+            return make_response(
+                jsonify({"message": "Post is not found", "status": "404"}), 404
+            )
 
 
 class VoteProcedure(Resource):
@@ -178,7 +195,9 @@ class VoteProcedure(Resource):
                 "collection": "collectionVote"
             }  # Collection name to save the user to
             new_vote.save()
-            return jsonify({"message": "vote saved successfully"})
+            return make_response(
+                jsonify({"message": "vote saved successfully", "status": "200"}), 200
+            )
         return jsonify()
 
 
@@ -193,4 +212,6 @@ class VoteList(Resource):
         if json_data is not None:
             return jsonify(json_data)
         else:
-            return jsonify({"message": "Vote data is not found"})
+            return make_response(
+                jsonify({"message": "Vote data is not found", "status": "404"}), 404
+            )
