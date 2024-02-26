@@ -7,6 +7,7 @@ import requests
 from models.comment_vote import Comment_vote
 from models.user import User
 from models.post import Post
+from models.vote import Vote
 import pytest
 from mongoengine import *
 from views.post import (
@@ -65,6 +66,7 @@ second_user_data = {
 }
 
 post_data = {
+    "author": "user1",
     "title": "Snow-white",
     "content": "abc",
 }
@@ -79,12 +81,14 @@ update_post_data2 = {
     "content": "def",
 }
 
-comment_data1 = {"person": "user1", "comment": "it's very nice!"}
+comment_data1 = {"comment": "it's very nice!"}
 
 comment_data2 = {"comment": "it's very nice!"}
 
 
 update_comment_data = {"comment": "this comment updated!"}
+
+vote_data = {"vote": 1}
 
 
 def new_user_create():
@@ -100,6 +104,30 @@ def new_user_create():
         new_user.set_password(password=first_user_data.get("password"))
         new_user.save()
         return new_user.username
+
+
+def create_post(x=None):
+    if x is not None:
+        author = x
+    else:
+        author = post_data.get("author")
+    new_post = Post(
+        author=author,
+        content=post_data.get("content"),
+        title=post_data.get("title"),
+    )
+    new_post.save()
+    return new_post
+
+
+def create_comment(post_id):
+    new_comment = Comment_vote(
+        person=first_user_data.get("username"),
+        postID=post_id,
+        comment=comment_data1.get("comment"),
+    )
+    new_comment.save()
+    return new_comment
 
 
 def create_headers(response):
@@ -191,19 +219,19 @@ def test_post_create(client):
 
 def test_update_post(client):
     # If the user is not logged in, she/he cannot update her/his own post.
-    # with app.test_client() as client:
-    #     response = client.put(f"/post/{post_id}", json=update_post_data)
-    #     assert response.status_code == 401
     with app.test_client() as client:
+        # author = "user1"
+        # create_post(author)
+        # result = Post.objects(author="user1").get()
+        # print(result)
+        # post_id = result.id
+        # print(post_id)
+        # response = client.put(f"/post/{post_id}", json=update_post_data1)
+        # assert response.status_code == 401
         new_user_create()
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
-        response_post_create = client.post(
-            "/post", json=post_data, headers=create_headers(response)
-        )
-        assert response_post_create.status_code == 201
-        post_id = json.loads(response_post_create.data)["post_id"]
-        print("RESPONSE DATA: ", post_id)
+        post_id = create_post().id
         response_post_update = client.put(
             f"/post/{post_id}", json=update_post_data2, headers=create_headers(response)
         )
@@ -216,14 +244,11 @@ def test_update_post(client):
 
 def test_delete_post(client):
     with app.test_client() as client:
+
         new_user_create()
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
-        response_post_create = client.post(
-            "/post", json=post_data, headers=create_headers(response)
-        )
-        assert response_post_create.status_code == 201
-        post_id = json.loads(response_post_create.data)["post_id"]
+        post_id = create_post().id
         response_post_delete = client.delete(
             f"/post/{post_id}", headers=create_headers(response)
         )
@@ -233,29 +258,15 @@ def test_delete_post(client):
 # User can view comments whether logged in or not
 def test_get_user_comments(client):
     with app.test_client() as client:
-        new_post = Post(
-            author=post_data.get("author"),
-            content=post_data.get("content"),
-            title=post_data.get("title"),
-        )
-        new_post.save()
-        new_comment = Comment_vote(
-            person=comment_data1.get("person"),
-            postID=1,
-            comment=comment_data1.get("comment"),
-        )
-        new_comment.save()
-        result = Post.objects().first()
-        post_id = result.id
-        print(result.id)
+        post_id = create_post().id
+        create_comment(post_id)
         response = client.get(f"/comment-list/{post_id}")
-        print(result.id)
         assert response.status_code == 200
 
 
 def test_create_comment():
-    # if user is not logged in cannot create comment
     with app.test_client() as client:
+        # if user is not logged in cannot create comment
         result = Post.objects.get()
         post_id = result.id
         response = client.post(f"/post/{post_id}/comment", json=post_data)
@@ -263,11 +274,7 @@ def test_create_comment():
         new_user_create()
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
-        response_post_create = client.post(
-            "/post", json=post_data, headers=create_headers(response)
-        )
-        assert response_post_create.status_code == 201
-        post_id = json.loads(response_post_create.data)["post_id"]
+        post_id = create_post().id
         response_comment_create = client.post(
             f"/post/{post_id}/comment",
             json=comment_data2,
@@ -276,36 +283,67 @@ def test_create_comment():
         assert response_comment_create.status_code == 200
 
 
-# def test_update_comment():
-#     with app.test_client() as client:
-#         result = Comment_vote.objects.get()
-#         comment_id = result.id
-#         response = client.put(f"/comment/{comment_id}", json=update_comment_data)
-#         assert response.status_code == 401
+def test_update_comment():
+    with app.test_client() as client:
+        result = Comment_vote.objects.get()
+        comment_id = result.id
+        response = client.put(f"/comment/{comment_id}", json=update_comment_data)
+        assert response.status_code == 401
+        # new_user_create()
+        # response = client.post("/user/auth/login", json=first_user_login_data)
+        # assert response.status_code == 200
+        # post_id = create_post().id
+        # comment_id = create_comment(post_id).id
+        # response_comment_update = client.put(
+        #     f"/comment/{comment_id}",
+        #     json=update_comment_data,
+        #     headers=create_headers(response),
+        # )
+        # assert response_comment_update.status_code == 200
 
-#         new_post = Post(
-#             _id=1,
-#             author=first_user_data.get("username"),
-#             content=post_data.get("content"),
-#             title=post_data.get("title"),
-#         )
-#         new_post.save()
-#         new_comment = Comment_vote(
-#             person=first_user_data.get("username"),
-#             postID=1,
-#             comment=comment_data1.get("comment"),
-#         )
-#         new_comment.save()
-#         user_created = new_user_create()
-#         assert user_created == first_user_data.get("username")
-#         response = client.post("/user/auth/login", json=first_user_login_data)
-#         assert response.status_code == 200
-#         result = Comment_vote.objects().first()
-#         # print(result.person)
-#         comment_id = result.id
-#         response_comment_update = client.put(
-#             f"/comment/{comment_id}",
-#             json=update_comment_data,
-#             headers=create_headers(response),
-#         )
-#         assert response_comment_update.status_code == 200
+
+def test_delete_comment():
+    with app.test_client() as client:
+        result = Comment_vote.objects.first()
+        comment_id = result.id
+        response = client.put(f"/comment/{comment_id}", json=update_comment_data)
+        assert response.status_code == 401
+        new_user_create()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        post_id = create_post().id
+        comment_id = create_comment(post_id).id
+        response_comment_update = client.delete(
+            f"/comment/{comment_id}",
+            headers=create_headers(response),
+        )
+        assert response_comment_update.status_code == 200
+
+
+def test_vote_list():
+    with app.test_client() as client:
+        response = client.get(f"/post/vote_list")
+        assert response.status_code == 401
+        new_user_create()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        response = client.get(f"/post/vote_list", headers=create_headers(response))
+        assert response.status_code == 200
+
+
+def test_create_vote():
+    with app.test_client() as client:
+        post_id = create_post().id
+        response = client.post(f"/post/{post_id}/vote")
+        assert response.status_code == 401
+        new_user_create()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        post_id = create_post().id
+        print(post_id)
+        response_vote_create = client.post(
+            f"/post/{post_id}/vote",
+            json=vote_data,
+            headers=create_headers(response),
+        )
+        assert response_vote_create.status_code == 200
