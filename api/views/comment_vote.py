@@ -96,9 +96,10 @@ class CommentDetail(Resource):
             collectionComment.delete_one(
                 {"_id": comment_id}
             )  # deleting the data whose id is given
-        return make_response(
-            jsonify({"message": "Comment deleted successfully", "status": "200"}), 200
-        )
+            return make_response(
+                jsonify({"message": "Comment deleted successfully", "status": "200"}),
+                200,
+            )
 
 
 class CommentList(Resource):
@@ -125,8 +126,13 @@ class VoteProcedure(Resource):
         )
         dataVote = data.get("vote")
         resultPost = collectionPost.find_one({"_id": post_id})
-        current_like_counter = resultPost.get("like_counter", 0)
-        current_dislike_counter = resultPost.get("dislike_counter", 0)
+
+        if resultPost is not None:
+            current_like_counter = resultPost.get("like_counter", 0)
+            current_dislike_counter = resultPost.get("dislike_counter", 0)
+        else:
+            current_like_counter = 0
+            current_dislike_counter = 0
         if resultVote is not None:
             collectionVote.update_one(
                 {"person": current_user_id, "postID": post_id}, {"$set": data}
