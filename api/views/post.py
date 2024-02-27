@@ -25,25 +25,25 @@ collectionVote = database["vote"]
 
 
 def get_formatted_post():
-    posts = list(collectionPost.find().sort("dateTime", -1))
+    posts = list(Post.objects.order_by("-dateTime"))
     formatted_posts = [
         {
-            "_id": str(post["_id"]),
-            "title": post["title"],
-            "content": post["content"],
-            "author": str(post["author"]),
-            "dateTime": post["dateTime"].isoformat(),
-            "like_counter": post["like_counter"],
-            "dislike_counter": post["dislike_counter"],
+            "_id": str(post._id),
+            "title": post.title,
+            "content": post.content,
+            "author": str(post.author),
+            "dateTime": post.dateTime.isoformat(),
+            "like_counter": post.like_counter,
+            "dislike_counter": post.dislike_counter,
         }
         for post in posts
     ]
     return formatted_posts
 
 
-def get_post_detail_by_user(user_id, post_id):
+def get_post_detail_by_user(user_id):
     results = collectionPost.find(
-        {"author": f"{user_id}", "_id": post_id}
+        {"author": f"{user_id}"}
     )  # The value from the url was searched in the database
     results_list = list(results)
     return results_list
@@ -112,8 +112,9 @@ class PostDetail(Resource):
     @cross_origin()
     def put(self, post_id):
         current_user_id = get_jwt_identity()
-        results = get_post_detail_by_user(current_user_id, post_id)
-        if results.__len__() != 0:
+        results = collectionPost.find({"author": f"{current_user_id}", "_id": post_id})
+        results_list = list(results)
+        if len(results_list) != 0:
             data = request.get_json()
             collectionPost.update_one({"_id": post_id}, {"$set": data})
             return make_response(
@@ -131,8 +132,10 @@ class PostDetail(Resource):
     @jwt_required()
     def delete(self, post_id):
         current_user_id = get_jwt_identity()
-        results = get_post_detail_by_user(current_user_id, post_id)
-        if results.__len__() != 0:
+        results = collectionPost.find({"author": f"{current_user_id}", "_id": post_id})
+        results_list = list(results)
+        (results_list)
+        if len(results_list) != 0:
             collectionPost.delete_one(
                 {"_id": post_id}
             )  # deleting the data whose id is given
@@ -143,4 +146,11 @@ class PostDetail(Resource):
             return make_response(
                 jsonify({"message": "Post deleted successfully", "status": "200"}),
                 200,
+            )
+        else:
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
             )
