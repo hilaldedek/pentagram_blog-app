@@ -1,42 +1,16 @@
-import datetime
-import json
-import time
-from flask import jsonify, session
-import mongoengine
-import requests
-from models.comment_vote import Comment_vote
-from models.user import User
-from models.post import Post
-from models.vote import Vote
-import pytest
 from mongoengine import *
-from views.post import (
-    PostList,
-    PostCreate,
-    PostDetail,
-    UserPost,
-)
 from app import app
-import mongomock
-from tests.test_data import *
+from tests.confest import *
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
-@pytest.fixture()
-def client():
-    disconnect()
-    connect(
-        "mongoenginetest",
-        host="localhost",
-        mongo_client_class=mongomock.MongoClient,
-        uuidRepresentation="standard",
-    )
-    app.config.update(
-        {
-            "TESTING": True,
-        }
-    )
-    with app.test_client() as client:
-        yield client
+def test_user_password_hash():
+    password = "password?.12_34"
+    hashed_password = generate_password_hash(password)
+    assert hashed_password is not None
+    assert hashed_password != password
+    assert check_password_hash(hashed_password, password) == True
+    assert check_password_hash(hashed_password, "password?.12_3") == False
 
 
 def test_user_register(client):
@@ -74,3 +48,12 @@ def test_user_login_failure(client):
             "/user/auth/login", json=first_user_login_data_wrong_password_and_email
         )
         assert response.status_code == 400
+
+
+def test_user_logout(client):
+    with app.test_client():
+        new_user_create()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        response = client.post("/user/auth/logout", headers=create_headers(response))
+        assert response.status_code == 200

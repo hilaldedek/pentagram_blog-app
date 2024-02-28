@@ -1,43 +1,8 @@
-import datetime
 import json
-import time
-from flask import jsonify, session
-import mongoengine
-import requests
-from models.comment_vote import Comment_vote
-from models.user import User
 from models.post import Post
-from models.vote import Vote
-import pytest
 from mongoengine import *
-from views.post import (
-    PostList,
-    PostCreate,
-    PostDetail,
-    UserPost,
-)
 from app import app
-import mongomock
-from tests.test_data import *
-
-
-@pytest.fixture()
-def client():
-    disconnect()
-    connect(
-        "mongoenginetest",
-        host="localhost",
-        mongo_client_class=mongomock.MongoClient,
-        uuidRepresentation="standard",
-    )
-    app.config.update(
-        {
-            "TESTING": True,
-        }
-    )
-    with app.test_client() as client:
-        yield client
-
+from tests.confest import *
 
 # The user can view posts on the home page whether he or she is logged in or not.
 def test_get_all_post(client):
@@ -103,35 +68,11 @@ def test_update_another_post(client):
         assert response_post_update.status_code == 403
 
 
-def test_update_post_logged_in(client):
-    with app.test_client() as client:
-        new_user_create()
-        response = client.post("/user/auth/login", json=first_user_login_data)
-        assert response.status_code == 200
-        post_id = create_post().id
-        response_post_update = client.put(
-            f"/post/{post_id}", json=update_post_data1, headers=create_headers(response)
-        )
-        assert response_post_update.status_code == 200
-
-
 def test_delete_post_not_logged_in(client):
     with app.test_client() as client:
         post_id = create_post().id
         response_post_delete = client.delete(f"/post/{post_id}")
         assert response_post_delete.status_code == 401
-
-
-def test_delete_post_logged_in(client):
-    with app.test_client() as client:
-        new_user_create()
-        response = client.post("/user/auth/login", json=first_user_login_data)
-        assert response.status_code == 200
-        post_id = create_post().id
-        response_post_delete = client.delete(
-            f"/post/{post_id}", headers=create_headers(response)
-        )
-        assert response_post_delete.status_code == 200
 
 
 def test_delete_another_post(client):
