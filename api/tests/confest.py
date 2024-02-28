@@ -1,9 +1,30 @@
+import pytest
 import json
 from models.comment_vote import Comment_vote
-from models.post import Post
 from models.user import User
+from models.post import Post
+from models.vote import Vote
+import pytest
+from mongoengine import *
+from app import app
+import mongomock
 
-
+@pytest.fixture()
+def client():
+    disconnect()
+    connect(
+        "mongoenginetest",
+        host="localhost",
+        mongo_client_class=mongomock.MongoClient,
+        uuidRepresentation="standard",
+    )
+    app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
+    with app.test_client() as client:
+        yield client
 
 first_user_data = {
     "username": "user1",
