@@ -4,6 +4,7 @@ from mongoengine import *
 from app import app
 from tests.confest import *
 
+
 # The user can view posts on the home page whether he or she is logged in or not.
 def test_get_all_post(client):
     with app.test_client() as client:
@@ -56,12 +57,25 @@ def test_update_post_not_logged_in(client):
         assert response_post_update.status_code == 401
 
 
-def test_update_another_post(client):
+def test_update_post_logged_in(client):
     with app.test_client() as client:
         new_user_create()
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
         post_id = create_post().id
+        print(post_id)
+        response_post_update = client.put(
+            f"/post/{post_id}", json=update_post_data1, headers=create_headers(response)
+        )
+        assert response_post_update.status_code == 200
+
+
+def test_update_another_post(client):
+    with app.test_client() as client:
+        new_user_create()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        post_id = create_post_user2().id
         response_post_update = client.put(
             f"/post/{post_id}", json=update_post_data2, headers=create_headers(response)
         )
@@ -73,6 +87,18 @@ def test_delete_post_not_logged_in(client):
         post_id = create_post().id
         response_post_delete = client.delete(f"/post/{post_id}")
         assert response_post_delete.status_code == 401
+
+
+def test_delete_post_logged_in(client):
+    with app.test_client() as client:
+        new_user_create()
+        response = client.post("/user/auth/login", json=first_user_login_data)
+        assert response.status_code == 200
+        post_id = create_post().id
+        response_post_delete = client.delete(
+            f"/post/{post_id}", headers=create_headers(response)
+        )
+        assert response_post_delete.status_code == 200
 
 
 def test_delete_another_post(client):
