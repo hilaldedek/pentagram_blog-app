@@ -9,6 +9,7 @@ from mongoengine import *
 from app import app
 import mongomock
 
+
 @pytest.fixture()
 def client():
     disconnect()
@@ -25,6 +26,7 @@ def client():
     )
     with app.test_client() as client:
         yield client
+
 
 first_user_data = {
     "username": "user1",
@@ -58,13 +60,18 @@ post_data = {
     "title": "Snow-white",
     "content": "abc",
 }
+
+post_data2 = {
+    "author": "user2",
+    "title": "def",
+    "content": "abc",
+}
+
 update_post_data1 = {
-    "author": "user1",
     "title": "Cinderella",
     "content": "def",
 }
 update_post_data2 = {
-    "author": "user2",
     "title": "Cinderella",
     "content": "def",
 }
@@ -99,6 +106,16 @@ def create_post():
         author=post_data.get("author"),
         content=post_data.get("content"),
         title=post_data.get("title"),
+    )
+    new_post.save()
+    return new_post
+
+
+def create_post_user2():
+    new_post = Post(
+        author=post_data2.get("author"),
+        content=post_data2.get("content"),
+        title=post_data2.get("title"),
     )
     new_post.save()
     return new_post
