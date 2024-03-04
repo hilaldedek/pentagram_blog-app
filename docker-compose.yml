@@ -2,23 +2,25 @@ version: "3"
 
 services:
   backend:
+    container_name: backend_container
     build: ./api
     ports:
       - "5000:5000"
     depends_on:
       - database
     environment:
-      - MONGO_URI=mongodb://pentagram_db:27017/pentagram_db
+      - MONGO_URI=mongodb://database:27017/?directConnection=true
 
   database:
+    container_name: database_container
     image: mongo
-    container_name: pentagram_db
     expose:
       - "27017"
     ports:
       - "27017:27017"
 
   frontend:
+    container_name: frontend_container
     build:
       context: ./client/blog
       dockerfile: Dockerfile

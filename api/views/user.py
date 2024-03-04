@@ -19,10 +19,6 @@ client = MongoClient(
 database = client["pentagram_db"]
 collectionUser = database["user"]
 collectionToken = database["token_block_list"]
-# try:
-#     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-# except Exception as error:
-#     jsonify({"message": ConnectionError})
 
 
 class Login(Resource):

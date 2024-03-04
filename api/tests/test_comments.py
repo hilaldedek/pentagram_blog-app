@@ -51,11 +51,11 @@ def test_update_comment_logged_in():
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
         post_id = create_post().id
-        comment_id = create_comment(post_id)._id
+        comment_id = create_comment(post_id).id
         response_comment_update = client.put(
             f"/comment/{comment_id}",
-            headers=create_headers(response),
             json=update_comment_data,
+            headers=create_headers(response),
         )
         assert response_comment_update.status_code == 200
 

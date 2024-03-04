@@ -1,10 +1,10 @@
-from flask_login import UserMixin
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from mongoengine import *
 
 
-class User(UserMixin, Document):
-    username = StringField(required=True, max_length=64, unique=True, dbref=True)
+class User(Document):
+    username = StringField(required=True, max_length=64, unique=True)
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
 

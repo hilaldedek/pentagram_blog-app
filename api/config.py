@@ -5,6 +5,8 @@ class BaseConfig(object):
     DEBUG = False
     JWT_SECRET_KEY = "!6uad-[aadşawlmdşwaödDArKZ8zp0V3bfXzWxW:ffhn7JlszRG9e;d6-HcCya"
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    MONGO_URI = "mongodb://localhost:27017/?directConnection=true"
+
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True

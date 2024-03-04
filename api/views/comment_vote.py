@@ -18,10 +18,6 @@ database = client["pentagram_db"]
 collectionPost = database["post"]
 collectionComment = database["comment_vote"]
 collectionVote = database["vote"]
-# try:
-#     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-# except Exception as error:
-#     jsonify({"message": ConnectionError})
 
 
 def get_comment_detail_by_user(comment_id, user_id):
@@ -73,7 +69,7 @@ class CommentDetail(Resource):
     def put(self, comment_id):
         current_user_id = get_jwt_identity()
         comments = get_comment_detail_by_user(comment_id, current_user_id)
-        if comments.__len__() != 0:
+        if len(comments) != 0:
             data = request.get_json()
             collectionComment.update_one({"_id": comment_id}, {"$set": data})
             return make_response(

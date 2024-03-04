@@ -18,23 +18,19 @@ database = client["pentagram_db"]
 collectionPost = database["post"]
 collectionComment = database["comment_vote"]
 collectionVote = database["vote"]
-# try:
-#     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-# except Exception as error:
-#     jsonify({"message": ConnectionError})
 
 
 def get_formatted_post():
-    posts = list(Post.objects.order_by("-dateTime"))
+    posts = list(collectionPost.find().sort("dateTime", -1))
     formatted_posts = [
         {
-            "_id": str(post._id),
-            "title": post.title,
-            "content": post.content,
-            "author": str(post.author),
-            "dateTime": post.dateTime.isoformat(),
-            "like_counter": post.like_counter,
-            "dislike_counter": post.dislike_counter,
+            "_id": str(post["_id"]),
+            "title": post["title"],
+            "content": post["content"],
+            "author": str(post["author"]),
+            "dateTime": post["dateTime"].isoformat(),
+            "like_counter": post["like_counter"],
+            "dislike_counter": post["dislike_counter"],
         }
         for post in posts
     ]
