@@ -6,7 +6,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: hilito.comminikube addons enable ingress
+    - host: hilito.com
       http:
         paths:
           - path: /backend
