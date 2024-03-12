@@ -31,13 +31,15 @@ import os
 from flask import Flask
 from mongoengine import *
 from flask_jwt_extended import JWTManager
+import mongoengine
 from config import config
 from flask_cors import CORS
 from flask_restful import Api
 from views.user import *
 from views.post import *
 from views.comment_vote import *
-
+from dotenv import load_dotenv
+from config import mongodb
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins="*", host=8000)
@@ -46,15 +48,6 @@ app.config.from_object(config)
 
 jwt = JWTManager(app)
 
-
-def mongodb():
-    mongodb_path = os.getenv(
-        "MONGO_URI", "mongodb://localhost:27017/?directConnection=true"
-    )
-    connect("pentagram_db", host=mongodb_path)
-
-
-mongodb()
 
 api.add_resource(Login, "/user/auth/login")
 api.add_resource(Logout, "/user/auth/logout")
@@ -71,4 +64,5 @@ api.add_resource(VoteList, "/post/vote_list")
 
 
 if __name__ == "__main__":
+    mongodb()
     app.run(debug=True, host="0.0.0.0")
