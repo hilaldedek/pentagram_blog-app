@@ -9,7 +9,7 @@ services:
     depends_on:
       - database
     environment:
-      - MONGO_URI=mongodb://database:27017/?directConnection=true
+      - MONGO_URI=mongodb+srv://Hilal:1234@hilitopage.hti7p3k.mongodb.net/
 
   database:
     container_name: database_container
