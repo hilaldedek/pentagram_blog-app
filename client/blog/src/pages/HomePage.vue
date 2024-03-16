@@ -1,8 +1,17 @@
 <template>
   <div>
     <NavbarComponent />
-    <PostComponent :postData="postData"/>
-    <!-- <FooterComponent /> -->
+    <div class="main">
+      <div class="search">
+        <input v-model="searchInput" placeholder="Search tags..." type="text" />
+        <button @click="searchData" type="submit">Search</button>
+      </div>
+      <button @click="getData" class="allPost">
+        <p>All Posts</p>
+      </button>
+    </div>
+
+    <PostComponent :postData="postData" />
   </div>
 </template>
 
@@ -29,7 +38,7 @@ export default {
   data() {
     return {
       postData: null,
-      currentPage: 1, // Add currentPage property to keep track of the current page
+      searchInput: "",
     };
   },
   mounted() {
@@ -46,23 +55,38 @@ export default {
   methods: {
     
     getData() {
-  // const page = this.currentPage;
-  fetch('http://127.0.0.1:5000')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Veri alınamadı');
-      }
-      return response.json();
-    })
-    .then(data => {
-      this.postData = data;
-    })
-    .catch(error => {
-      console.error('Veri alınamadı:', error.message);
-    });
-},
-    
-}}
+      fetch("http://127.0.0.1:5000/")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Veri alınamadı");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          this.postData = data;
+        })
+        .catch((error) => {
+          console.error("Veri alınamadı:", error.message);
+        });
+    },
+    searchData() {
+      fetch(`http://127.0.0.1:5000/tag/${this.searchInput}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Veri alınamadı");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          this.postData = data;
+          this.searchInput = "";
+        })
+        .catch((error) => {
+          console.error("Veri alınamadı:", error.message);
+        });
+    },
+  },
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style src="../styles/home.css" scoped></style>

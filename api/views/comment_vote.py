@@ -87,13 +87,18 @@ class CommentDetail(Resource):
 
 class CommentList(Resource):
     def get(self, post_id):
-        results = collectionComment.find({"postID": post_id})
-        results_list = list(results)
-        json_data = results_list
-        if json_data is not None:
-            return jsonify(json_data)
-        else:
-            return jsonify({"message": "Post is not found"})
+        comments = Comment_vote.objects(postID=post_id)
+        formatted_comments = [
+            {
+                "_id": str(comment.id),
+                "comment": comment.comment,
+                "person": comment.person.username,
+            }
+            for comment in comments
+        ]
+        return make_response(
+            jsonify({"comments": formatted_comments, "status": "200"}), 200
+        )
 
 
 class VoteProcedure(Resource):

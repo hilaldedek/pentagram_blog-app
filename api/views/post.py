@@ -1,56 +1,49 @@
-from flask import jsonify, request
-from pymongo import MongoClient
-from mongoengine import *
-from models.post import Post
-from flask_jwt_extended import (
-    jwt_required,
-    get_jwt_identity,
-)
+from collections import OrderedDict
+from flask import jsonify, make_response, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_cors import cross_origin
 from datetime import datetime
 from flask_restful import Resource
 
-client = MongoClient("mongodb://localhost:27017/?directConnection=true")
-database = client["pentagram_db"]
-collectionPost = database["post"]
-collectionComment = database["comment_vote"]
-collectionVote = database["vote"]
-try:
-    connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-except Exception as error:
-    jsonify({"message": ConnectionError})
+mongodb()
 
 
-def get_formatted_post():
-    posts = list(collectionPost.find().sort("dateTime", -1))
-    formatted_posts = [
-        {
-            "_id": str(post["_id"]),
-            "title": post["title"],
-            "content": post["content"],
-            "author": str(post["author"]),
-            "dateTime": post["dateTime"].isoformat(),
-            "like_counter": post["like_counter"],
-            "dislike_counter": post["dislike_counter"],
-        }
-        for post in posts
-    ]
-    return formatted_posts
+def remove_duplicates_maintain_order(seq):
+    seen = OrderedDict()
+    for item in seq:
+        item_lower = item.lower()
+        if item_lower not in seen:
+            seen[item_lower] = item_lower
+    return list(seen.values())
 
 
-def get_post_detail_by_user(user_id, post_id):
-    results = collectionPost.find(
-        {"author": f"{user_id}", "_id": post_id}
-    )  # The value from the url was searched in the database
-    results_list = list(results)
-    return results_list
+def update_tags(db_tags, new_tags):
+    tags_lower = [tag.lower() for tag in db_tags]
+    new_list = []
+    for tag in new_tags:
+        if tag.lower() not in tags_lower:
+            new_list.append(tag.lower())
+    return new_list
 
 
 class PostList(Resource):
     @cross_origin()
     def get(self):
-        posts = get_formatted_post()
-        return (jsonify({"posts": posts}), 200)
+        posts = Post.objects.order_by("-dateTime").all()
+        formatted_posts = [
+            {
+                "_id": str(post.id),
+                "title": post.title,
+                "content": post.content,
+                "author": post.author.username,
+                "dateTime": post.dateTime.isoformat(),
+                "tags": post.tags,
+                "like_counter": post.like_counter,
+                "dislike_counter": post.dislike_counter,
+            }
+            for post in posts
+        ]
+        return make_response(jsonify({"posts": formatted_posts, "status": "200"}), 200)
 
 
 class PostCreate(Resource):
@@ -58,32 +51,59 @@ class PostCreate(Resource):
     @cross_origin()
     def post(self):
         data = request.get_json()
-        current_user_id = get_jwt_identity()  # current user
-        new_post = Post(
-            author=current_user_id,
-            title=data.get("title"),
-            content=data.get("content"),
-            # image=request.files.get("image"),
-            dateTime=datetime.utcnow(),
-            like_counter=0,
-            dislike_counter=0,
-        )
-        meta = {"collection": "post"}  # Collection name to save the user to
-        new_post.save()
-        return jsonify({"message": "Post created successfully"})
+        current_user_id = get_jwt_identity()
+        current_user = User.objects(username=current_user_id).first()
+        tags_data = remove_duplicates_maintain_order(data.get("tags"))
+        if current_user:
+            new_post = Post(
+                author=current_user,
+                title=data.get("title"),
+                content=data.get("content"),
+                dateTime=datetime.utcnow(),
+                tags=tags_data,
+                like_counter=0,
+                dislike_counter=0,
+            )
+            new_post.save()
+            return make_response(
+                jsonify(
+                    {
+                        "message": "Post created successfully",
+                        "post_id": str(new_post.id),
+                        "status": "201",
+                    }
+                ),
+                201,
+            )
+        else:
+            return make_response(
+                jsonify({"message": "User not found", "status": "404"}), 404
+            )
 
 
 class UserPost(Resource):
     @jwt_required()
     def get(self):
-        current_user_id = get_jwt_identity()
-        results = collectionPost.find({"author": f"{current_user_id}"}).sort(
-            "dateTime", -1
-        )  # The value from the url was searched in the database
-        results_list = list(results)
-        json_data = jsonify(results_list)
-        if json_data is not None:
-            return json_data
+        current_username = get_jwt_identity()
+        current_user = User.objects(username=current_username).first()
+        if current_user:
+            posts = Post.objects(author=current_user.id).order_by("-dateTime").all()
+            formatted_posts = [
+                {
+                    "_id": str(post.id),
+                    "title": post.title,
+                    "content": post.content,
+                    "author": post.author.username,
+                    "dateTime": post.dateTime.strftime("%d %m %Y %H %M %S"),
+                    "tags": post.tags,
+                    "like_counter": post.like_counter,
+                    "dislike_counter": post.dislike_counter,
+                }
+                for post in posts
+            ]
+            return make_response(
+                jsonify({"posts": formatted_posts, "status": "200"}), 200
+            )
         else:
             return jsonify({"message": "Posts is not found"})
 
@@ -91,13 +111,38 @@ class UserPost(Resource):
 class PostDetail(Resource):
     @jwt_required()
     @cross_origin()
+    def get(self, post_id):
+        current_user_id = get_jwt_identity()
+        current_user = User.objects(username=current_user_id).first()
+        post = Post.objects(_id=post_id, author=current_user).first()
+        formatted_posts = [
+            {
+                "_id": str(post.id),
+                "title": post.title,
+                "content": post.content,
+                "author": post.author.username,
+                "dateTime": post.dateTime.strftime("%d %m %Y %H %M %S"),
+                "tags": post.tags,
+                "like_counter": post.like_counter,
+                "dislike_counter": post.dislike_counter,
+            }
+        ]
+        return make_response(jsonify({"posts": formatted_posts, "status": "200"}), 200)
+
+    @jwt_required()
     def put(self, post_id):
         current_user_id = get_jwt_identity()
         results = get_post_detail_by_user(current_user_id, post_id)
         if results.__len__() != 0:
             data = request.get_json()
-            collectionPost.update_one({"_id": post_id}, {"$set": data})
-            return jsonify({"msg": "post updated successfully"}), 200
+            tags_data = remove_duplicates_maintain_order(data.get("tags"))
+            new_data = [item.lower() for item in tags_data]
+            post.update(
+                title=data.get("title"), content=data.get("content"), tags=new_data
+            )
+            return make_response(
+                jsonify({"message": "Post updated successfully", "status": "200"}), 200
+            )
         else:
             return jsonify({"msg": "This post does not belong to you"})
 
@@ -115,4 +160,30 @@ class PostDetail(Resource):
             collectionVote.delete_many({"postID": post_id})
             return jsonify({"message": "Post deleted successfully"})
         else:
-            return jsonify({"message": "Post is not found"})
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
+
+
+class PostSearch(Resource):
+    @cross_origin()
+    def get(self, post_tag):
+        posts = Post.objects(tags=post_tag)
+        post_list = []
+        for post in posts:
+            post_data = {
+                "id": str(post.id),
+                "author": str(post.author.id),
+                "title": post.title,
+                "content": post.content,
+                "dateTime": post.dateTime.isoformat(),
+                "tags": post.tags,
+                "like_counter": post.like_counter,
+                "dislike_counter": post.dislike_counter,
+            }
+            post_list.append(post_data)
+
+        return jsonify({"posts": post_list})

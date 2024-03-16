@@ -5,6 +5,12 @@
         <div class="card" v-for="post in postData.posts" :key="post._id">
           <span class="title">{{ post.title }}</span>
           <span class="content">{{ post.content }}</span>
+          <div class="divTags">
+            <div v-for="(tag, index) in post.tags" :key="index" >
+            <button class="buttonTags">{{ tag }}</button>
+          </div>
+          </div>
+          
           <span class="author">Written by {{ post.author }}</span>
           <span class="date">{{ formatDateTime(post.dateTime) }}</span>
           <div class="voteSpan">

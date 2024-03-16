@@ -127,7 +127,7 @@ export default {
         }
 
         const commentData = await response.json();
-        this.comments = commentData;
+        this.comments = commentData.comments;
       } catch (error) {
         console.error("Veri alınamadı:", error);
       }

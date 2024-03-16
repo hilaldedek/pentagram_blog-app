@@ -57,7 +57,7 @@ export default {
         }
 
         const responseData = await response.json();
-        this.posts = responseData;
+        this.posts = responseData.posts;
       } catch (error) {
         console.error("Error fetching user posts:", error);
       }
@@ -73,7 +73,14 @@ export default {
       return new Date(dateTime).toLocaleString("tr-TR", options);
     },
     updatePost(post) {
-      this.$router.push({ path: `/post/${post._id}`, props: { postContent: post.content, postTitle:post.title } });
+      this.$router.push({
+        path: `/post/${post._id}`,
+        params: {
+          content: post.content,
+          title: post.title,
+          tags: post.tags,
+        },
+      });
     },
     async deletePost(post) {
       const getToken = localStorage.getItem("access_token");
