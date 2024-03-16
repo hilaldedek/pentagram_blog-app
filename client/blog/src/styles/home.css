@@ -1,0 +1,86 @@
+.main {
+  margin-top: 8rem;
+  display: flex;
+  justify-content: center;
+}
+.search {
+  display: inline-block;
+  position: relative;
+  margin: 1rem;
+}
+
+.search input[type="text"] {
+  width: 250px;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.search button[type="submit"] {
+  background-color: var(--navbar-button-color);
+  font-family: "DM Serif Display", serif;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 0;
+  right: 0;
+  transition: 0.9s ease;
+}
+
+.search button[type="submit"]:hover {
+  transform: scale(1.1);
+  color: rgb(255, 255, 255);
+  background-color: var(--navbar-button-color);
+}
+
+.allPost {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.allPost {
+  --primary-color: #111;
+  --hovered-color: var(--navbar-button-color);
+  position: relative;
+  display: flex;
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.allPost p {
+  margin: 0;
+  position: relative;
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+.allPost::after {
+  position: absolute;
+  content: "";
+  width: 0;
+  left: 0;
+  bottom: 15px;
+  background: var(--hovered-color);
+  height: 1px;
+  transition: 0.3s ease-out;
+}
+
+.allPost:hover::after {
+  width: 100%;
+}
+
+.allPost:hover p::before {
+  width: 100%;
+}

@@ -58,7 +58,6 @@ export default {
 
         const responseData = await response.json();
         this.posts = responseData.posts;
-        console.log(responseData);
       } catch (error) {
         console.error("Error fetching user posts:", error);
       }
@@ -76,7 +75,11 @@ export default {
     updatePost(post) {
       this.$router.push({
         path: `/post/${post._id}`,
-        props: { postContent: post.content, postTitle: post.title },
+        params: {
+          content: post.content,
+          title: post.title,
+          tags: post.tags,
+        },
       });
     },
     async deletePost(post) {

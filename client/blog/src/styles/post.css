@@ -4,7 +4,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 @import url("../styles/variables.css");
 .main {
-  margin-top: 100px;
+  margin-top: 2rem;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -79,6 +79,25 @@
   color: #fff;
   border: none;
   cursor: pointer;
+}
+
+.buttonTags {
+  margin-right: 1rem;
+  background-color: var(--navbar-button-color);
+  color: var(--navbar-text-color);
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: "DM Serif Display", serif;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  cursor: pointer;
+  margin: 0.2rem;
+}
+
+.divTags{
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .button:hover::before {

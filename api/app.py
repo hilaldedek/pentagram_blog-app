@@ -61,6 +61,7 @@ api.add_resource(CommentDetail, "/comment/<int:comment_id>")
 api.add_resource(CommentList, "/comment-list/<int:post_id>")
 api.add_resource(VoteProcedure, "/post/<int:post_id>/vote")
 api.add_resource(VoteList, "/post/vote_list")
+api.add_resource(PostSearch, "/tag/<string:post_tag>")
 
 
 if __name__ == "__main__":
