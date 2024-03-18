@@ -32,13 +32,13 @@ from flask import Flask
 from mongoengine import *
 from flask_jwt_extended import JWTManager
 import mongoengine
+from views.follow import FollowUser
 from config import config
 from flask_cors import CORS
 from flask_restful import Api
 from views.user import *
 from views.post import *
 from views.comment_vote import *
-from dotenv import load_dotenv
 from config import mongodb
 
 app = Flask(__name__)
@@ -62,7 +62,7 @@ api.add_resource(CommentList, "/comment-list/<int:post_id>")
 api.add_resource(VoteProcedure, "/post/<int:post_id>/vote")
 api.add_resource(VoteList, "/post/vote_list")
 api.add_resource(PostSearch, "/tag/<string:post_tag>")
-
+api.add_resource(FollowUser, "/user/<string:username>/follow")
 
 if __name__ == "__main__":
     mongodb()

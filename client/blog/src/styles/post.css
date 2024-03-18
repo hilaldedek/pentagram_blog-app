@@ -13,7 +13,6 @@
   margin: 2rem;
   width: 40rem;
   position: relative;
-  border: 15px solid #bfc1b8;
   box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.1);
   transition: all 120ms;
   display: flex;
@@ -22,12 +21,6 @@
   justify-content: center;
   background: #eef0e5;
   padding: 1rem;
-}
-.author {
-  margin-top: 1rem;
-  font-family: "Lobster", sans-serif;
-  font-size: 1.2rem;
-  color: #000000;
 }
 .card .title {
   font-family: "Kalnia", serif;
@@ -95,7 +88,7 @@
   margin: 0.2rem;
 }
 
-.divTags{
+.divTags {
   display: flex;
   flex-wrap: wrap;
 }
@@ -108,7 +101,7 @@
   position: relative;
   z-index: 1;
 }
-.date{
+.date {
   margin-top: 1rem;
   font-family: "Raleway", sans-serif;
   font-weight: 800;
@@ -175,7 +168,23 @@
 .dislike-inactive {
   background-color: #bfc1b8;
 }
-
+.authorButton {
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 10px;
+  background-color: #bfc1b8;
+  margin-top: 1rem;
+  font-family: "Lobster", sans-serif;
+  font-size: 1.2rem;
+  color: #000000;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.userImg {
+  width: 2rem;
+  margin-right: 0.5rem;
+}
 @media (max-width: 900px) {
   .card {
     width: auto;
