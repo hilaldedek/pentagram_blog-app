@@ -7,9 +7,14 @@
           >Login/Register</router-link
         >
       </div>
-      <div class="search">
-        <input type="text" class="search__input" placeholder="Search an user" />
-        <button class="search__button">
+      <div v-if="localStorageData" class="search">
+        <input
+          v-model="searchInput"
+          type="text"
+          class="search__input"
+          placeholder="Search an user"
+        />
+        <button @click="getUserInfo" class="search__button">
           <svg class="search__icon" aria-hidden="true" viewBox="0 0 24 24">
             <g>
               <path
@@ -28,21 +33,6 @@
           <button @click="logout" class="router-link-like">Logout</button>
         </div>
       </div>
-
-      <!-- <div v-if="localStorageData">
-        <router-link to="/post" class="buttonStyle">Create Post</router-link>
-      </div> -->
-      <!-- <div v-if="localStorageData">
-        <router-link to="/profile" class="buttonStyle">Profile</router-link>
-      </div> -->
-      <!-- <div v-if="localStorageData">
-        <button @click="logout" class="buttonStyle">Logout</button>
-      </div> -->
-      <!-- <div v-if="localStorageData">
-        <router-link to="/profile" class="userButtonStyle">{{
-          localStorageData
-        }}</router-link>
-      </div> -->
     </div>
   </div>
 </template>
@@ -50,6 +40,11 @@
 <script>
 import axios from "axios";
 export default {
+  data() {
+    return {
+      searchInput: "",
+    };
+  },
   methods: {
     async postData() {
       try {
@@ -100,10 +95,15 @@ export default {
         alert("Logout failed");
       }
     },
+    getUserInfo() {
+      console.log(this.searchInput);
+      this.$router.push({ path: `/user/${this.searchInput}` });
+      window.location.reload();
+    },
   },
   computed: {
     localStorageData() {
-      return localStorage.getItem("username");
+      return localStorage.getItem(`username`);
     },
   },
 };

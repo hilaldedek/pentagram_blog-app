@@ -2,7 +2,7 @@
   <div>
     <NavbarComponent />
     <div class="main">
-      <div class="info">
+      <div v-if="username" class="info">
         <h2 class="authorName">{{ username }}</h2>
         <div class="follow">
           <div>
@@ -18,45 +18,82 @@
       <div class="followButton">
         <div
           class="tooltip-container"
-          v-if="followStatus == 0"
+          v-if="followStatus == 0 && !(username == localStorageData)"
           @click="Follow()"
         >
-          <span class="text">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 95 114"
-              class="svgIcon"
-            >
-              <rect fill="black" rx="28.5" height="57" width="57" x="19"></rect>
-              <path
-                fill="black"
-                d="M0 109.5C0 83.2665 21.2665 62 47.5 62V62C73.7335 62 95 83.2665 95 109.5V114H0V109.5Z"
-              ></path>
-            </svg>
-            Follow</span
-          >
+          <span class="text"> Follow</span>
         </div>
         <div
-          class="tooltip-container2"
-          v-if="followStatus == 1"
+          class="tooltip-container"
+          v-if="followStatus == 1 && !(username == localStorageData)"
           @click="Unfollow()"
         >
-          <span class="text2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 95 114"
-              class="svgIcon2"
-            >
-              <rect fill="black" rx="28.5" height="57" width="57" x="19"></rect>
-              <path
-                fill="black"
-                d="M0 109.5C0 83.2665 21.2665 62 47.5 62V62C73.7335 62 95 83.2665 95 109.5V114H0V109.5Z"
-              ></path>
-            </svg>
-            Unfollow</span
-          >
+          <span class="text"> Unfollow</span>
+        </div>
+      </div>
+    </div>
+    <div v-if="!username && localStorageData" class="messageDiv">
+      <div class="userMessage">
+        <div class="message">
+          <p>User is not found!</p>
+        </div>
+      </div>
+    </div>
+    <div v-if="!localStorageData" class="messageDiv">
+      <div class="userMessage">
+        <div class="message">
+          <p>Please login!</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="mainCard">
+        <div v-if="posts">
+          <div class="card" v-for="post in posts" :key="post._id">
+            <span class="title">{{ post.title }}</span>
+            <span class="content">{{ post.content }}</span>
+            <div class="divTags">
+              <div v-for="(tag, index) in post.tags" :key="index">
+                <button class="buttonTags">{{ tag }}</button>
+              </div>
+            </div>
+
+            <span class="date">{{ post.dateTime }}</span>
+            <div class="voteSpan">
+              <span class="likes">{{ post.like_counter }} likes</span>
+              <span class="dislikes">{{ post.dislike_counter }} dislike</span>
+            </div>
+
+            <div class="vote" v-if="localStorageData">
+              <div>
+                <button
+                  @click="toggleLike(post._id)"
+                  class="voteBtn"
+                  :class="{
+                    'like-active': buttonStates[post._id] === 1,
+                    'like-inactive': buttonStates[post._id] !== 1,
+                  }"
+                >
+                  <img src="../assets/like.png" alt="" class="voteImg" />
+                </button>
+              </div>
+              <div>
+                <button
+                  @click="toggleDislike(post._id)"
+                  class="voteBtn"
+                  :class="{
+                    'dislike-active': buttonStates[post._id] === -1,
+                    'dislike-inactive': buttonStates[post._id] !== -1,
+                  }"
+                >
+                  <img src="../assets/dislike.png" alt="" class="voteImg" />
+                </button>
+              </div>
+            </div>
+            <button class="button buttonComment" @click="commentPost(post._id)">
+              <p class="button-content">Comment</p>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -76,12 +113,40 @@ export default {
       followers: null,
       username: "",
       followStatus: null,
+      posts: [],
+      buttonStates: {},
     };
   },
   mounted() {
     this.getUserInfo();
+    this.UserPostsList();
   },
   methods: {
+    async UserPostsList() {
+      const getToken = localStorage.getItem("access_token");
+      const username = this.$route.params.username;
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:5000/user/${username}/post`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${getToken}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        this.posts = responseData.posts;
+        console.log(this.posts);
+      } catch (error) {
+        console.error("Error fetching user posts:", error);
+      }
+    },
     getUserInfo() {
       const getToken = localStorage.getItem("access_token");
       const username = this.$route.params.username;
@@ -98,6 +163,7 @@ export default {
           return response.json();
         })
         .then((data) => {
+          console.log("User PROFILE PAGE:", data);
           this.follow = data.followInfo[0].follow;
           this.followers = data.followInfo[0].followers;
           this.username = data.followInfo[0].username;
@@ -152,6 +218,46 @@ export default {
       } catch (error) {
         console.error("Error during creating post:", error);
       }
+    },
+    commentPost(post) {
+      this.$router.push({ path: `/comment/${post}`, params: { postId: post } });
+    },
+    async toggleLike(postId) {
+      this.updateButtonState(postId, this.buttonStates[postId] === 1 ? 0 : 1);
+      await this.sendVote(postId, this.buttonStates[postId]);
+    },
+    async toggleDislike(postId) {
+      this.updateButtonState(postId, this.buttonStates[postId] === -1 ? 0 : -1);
+      await this.sendVote(postId, this.buttonStates[postId]);
+    },
+    updateButtonState(postId, newState) {
+      this.$set(this.buttonStates, postId, newState);
+    },
+    async sendVote(postId, vote) {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(
+        `http://127.0.0.1:5000/post/${postId}/vote`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify({
+            vote: vote,
+          }),
+        }
+      );
+      window.location.reload();
+      if (!response.ok) {
+        console.error(`HTTP error! Status: ${response.status}`);
+      }
+    },
+  },
+  computed: {
+    localStorageData() {
+      return localStorage.getItem("username");
     },
   },
 };

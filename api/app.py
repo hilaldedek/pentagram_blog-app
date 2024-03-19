@@ -32,7 +32,7 @@ from flask import Flask
 from mongoengine import *
 from flask_jwt_extended import JWTManager
 import mongoengine
-from views.follow import FollowUser
+from views.follow import FollowUser, UserProfilePostList
 from config import config
 from flask_cors import CORS
 from flask_restful import Api
@@ -63,6 +63,7 @@ api.add_resource(VoteProcedure, "/post/<int:post_id>/vote")
 api.add_resource(VoteList, "/post/vote_list")
 api.add_resource(PostSearch, "/tag/<string:post_tag>")
 api.add_resource(FollowUser, "/user/<string:username>/follow")
+api.add_resource(UserProfilePostList, "/user/<string:username>/post")
 
 if __name__ == "__main__":
     mongodb()

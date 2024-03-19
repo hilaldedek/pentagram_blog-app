@@ -19,7 +19,6 @@
 <script>
 import PostComponent from "@/components/PostComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue";
-// import FooterComponent from "@/components/FooterComponent.vue";
 
 /**
  * The HomePage component represents the main page of the application.

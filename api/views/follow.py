@@ -1,4 +1,5 @@
 from flask import jsonify, make_response, request
+from models.post import Post
 from models.user import User
 from models.follow import Follow
 from flask_jwt_extended import (
@@ -23,44 +24,49 @@ class FollowUser(Resource):
         current_user_db = Follow.objects(username=current_user).first()
         username_id = User.objects(username=username).first()
         user_db = Follow.objects(username=username).first()
-        if user_db is not None:
-            if current_user_db is not None:
-                db_follow_list = current_user_db.follow
-                if user_db is not None:
-                    user_db_followers_list = user_db.followers
-                    user_db_follow_list = user_db.follow
-                    if username_id.id in db_follow_list:
-                        followInfo = [
-                            {
-                                "username": username,
-                                "followStatus": 1,
-                                "follow": len(user_db_follow_list),
-                                "followers": len(user_db_followers_list),
-                            }
-                        ]
-                        print(followInfo)
-                        return make_response(jsonify({"followInfo": followInfo}))
-                    else:
-                        followInfo = [
-                            {
-                                "username": username,
-                                "followStatus": 0,
-                                "follow": len(user_db_follow_list),
-                                "followers": len(user_db_followers_list),
-                            }
-                        ]
+        if username_id is not None:
+            if user_db is not None:
+                if current_user_db is not None:
+                    db_follow_list = current_user_db.follow
+                    if user_db is not None:
+                        user_db_followers_list = user_db.followers
+                        user_db_follow_list = user_db.follow
+                        if username_id.id in db_follow_list:
+                            followInfo = [
+                                {
+                                    "username": username,
+                                    "followStatus": 1,
+                                    "follow": len(user_db_follow_list),
+                                    "followers": len(user_db_followers_list),
+                                }
+                            ]
+                            return make_response(jsonify({"followInfo": followInfo}))
+                        else:
+                            followInfo = [
+                                {
+                                    "username": username,
+                                    "followStatus": 0,
+                                    "follow": len(user_db_follow_list),
+                                    "followers": len(user_db_followers_list),
+                                }
+                            ]
 
-                        return make_response(jsonify({"followInfo": followInfo}))
+                            return make_response(jsonify({"followInfo": followInfo}))
+            else:
+                followInfo = [
+                    {
+                        "username": username,
+                        "followStatus": 0,
+                        "follow": 0,
+                        "followers": 0,
+                    }
+                ]
+                return make_response(jsonify({"followInfo": followInfo}))
         else:
-            followInfo = [
-                {
-                    "username": username,
-                    "followStatus": 0,
-                    "follow": 0,
-                    "followers": 0,
-                }
-            ]
-            return make_response(jsonify({"followInfo": followInfo}))
+            return make_response(
+                jsonify({"message": f"{username} is not found.", "status": "404"}),
+                404,
+            )
 
     @jwt_required()
     def post(self, username):
@@ -165,4 +171,32 @@ class FollowUser(Resource):
                     }
                 ),
                 404,
+            )
+
+
+class UserProfilePostList(Resource):
+    @jwt_required()
+    def get(self, username):
+        user = User.objects(username=username).first()
+        if user:
+            posts = Post.objects(author=user.id).order_by("-dateTime").all()
+            formatted_posts = [
+                {
+                    "_id": str(post.id),
+                    "title": post.title,
+                    "content": post.content,
+                    "author": post.author.username,
+                    "dateTime": post.dateTime.strftime("%d %m %Y %H %M %S"),
+                    "tags": post.tags,
+                    "like_counter": post.like_counter,
+                    "dislike_counter": post.dislike_counter,
+                }
+                for post in posts
+            ]
+            return make_response(
+                jsonify({"posts": formatted_posts, "status": "200"}), 200
+            )
+        else:
+            return make_response(
+                jsonify({"message": "User not found", "status": "404"}), 404
             )

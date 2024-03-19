@@ -184,7 +184,7 @@ class PostSearch(Resource):
         for post in posts:
             post_data = {
                 "id": str(post.id),
-                "author": str(post.author.id),
+                "author": str(post.author.username),
                 "title": post.title,
                 "content": post.content,
                 "dateTime": post.dateTime.isoformat(),

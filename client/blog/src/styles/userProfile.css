@@ -4,7 +4,7 @@
   justify-content: center;
   flex-direction: column;
 }
-.info{
+.info {
   font-family: "Raleway", sans-serif;
   display: flex;
   flex-direction: row;
@@ -12,25 +12,25 @@
   align-items: center;
   gap: 5rem;
 }
-.center{
+.center {
   text-align: center;
   font-size: 2rem;
 }
-.follow{
+.follow {
   display: flex;
   flex-direction: row;
   gap: 2rem;
 }
-.authorName{
+.authorName {
   font-family: "DM Serif Display", serif;
   font-size: 2.5rem;
 }
-.followButton{
+.followButton {
   display: flex;
   flex-direction: row;
   justify-content: center;
   gap: 2rem;
-  margin:0.8rem;
+  margin: 0.8rem;
 }
 .tooltip-container {
   width: 8rem;
@@ -58,38 +58,212 @@
   font-weight: 600;
   color: rgb(0, 0, 0);
 }
-.svgIcon {
-  width: 16px;
-  height: auto;
-}
-.tooltip-container2 {
-  width: 8rem;
+/* Error Message */
+.messageDiv{
   display: flex;
-  align-items: center;
   justify-content: center;
+}
+.userMessage {
+  width: 50%;
   position: relative;
-  transition: all 0.3s;
-  background-color: rgba(253, 137, 137, 0.636);
-  padding: 0 0.5rem;
-  border-radius: 12px;
-  cursor: pointer;
-  border: 1px solid rgb(211, 211, 211);
-  font-family: "Raleway", sans-serif;
-  height: 2.5rem;
+  margin: auto;
+  border-radius: 10px;
+  margin: 5rem;
+  padding: 3rem;
+  background-color: #a87c7c82;
+}
+.message p {
+  font-size: 1.5rem;
+  color: #a87c7c;
+  font-family: "Kalnia", serif;
+  text-align: center;
 }
 
-.text2 {
-  width: 100%;
-  height: 100%;
+/* User Post List */
+.mainCard {
+  margin-top: 2rem;
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.card {
+  margin: 2rem;
+  width: 40rem;
+  position: relative;
+  box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.1);
+  transition: all 120ms;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgb(0, 0, 0);
+  background: #eef0e5;
+  padding: 1rem;
 }
-.svgIcon2 {
-  width: 16px;
-  height: auto;
+.card .title {
+  font-family: "Kalnia", serif;
+  text-align: center;
+  font-size: 1.8rem;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: var(--navbar-header-color);
+}
+
+.card .content {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: "Lora", serif;
+  font-size: 1.1rem;
+  color: #000;
+}
+
+.card:hover::after {
+  bottom: 0;
+  opacity: 1;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.text {
+  max-width: 55px;
+}
+
+.image {
+  background: rgb(241, 241, 241);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.button {
+  margin: 1rem;
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 1.5rem;
+  background: #bfc1b8;
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.buttonTags {
+  margin-right: 1rem;
+  background-color: var(--navbar-button-color);
+  color: var(--navbar-text-color);
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: "DM Serif Display", serif;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  cursor: pointer;
+  margin: 0.2rem;
+}
+
+.divTags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+.date {
+  margin-top: 1rem;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+}
+.vote {
+  margin: 0.4rem;
+  display: flex;
+  flex-direction: row;
+}
+.voteBtn {
+  margin: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: #bfc1b8;
+}
+
+.voteImg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.buttonComment::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(82.3deg, #b0a695 10.8%, #776b5d 94.3%);
+  transition: all 0.475s;
+}
+.voteSpan {
+  font-family: "Raleway", sans-serif;
+  font-weight: 900;
+  margin-top: 2rem;
+}
+.likes {
+  margin-right: 1rem;
+}
+.image {
+  background: rgb(241, 241, 241);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.like-active {
+  background-color: #9ade7b;
+}
+
+.like-inactive {
+  background-color: #bfc1b8;
+}
+
+.dislike-active {
+  background-color: #ff8f8f;
+}
+
+.dislike-inactive {
+  background-color: #bfc1b8;
+}
+.authorButton {
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 10px;
+  background-color: #bfc1b8;
+  margin-top: 1rem;
+  font-family: "Lobster", sans-serif;
+  font-size: 1.2rem;
+  color: #000000;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.userImg {
+  width: 2rem;
+  margin-right: 0.5rem;
+}
+@media (max-width: 900px) {
+  .card {
+    width: auto;
+  }
 }
