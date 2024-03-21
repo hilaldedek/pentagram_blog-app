@@ -45,7 +45,7 @@ export default {
     NavbarComponent,
     FooterComponent,
   },
-  props: ['postContent', 'postTitle'],
+  props: ["postContent", "postTitle"],
   mounted() {
     // Hedef sayfa yüklendiğinde props değerlerine erişebilirsiniz.
     console.log(this.postContent, this.postTitle);
