@@ -5,6 +5,7 @@ import PostCreatePage from "../pages/PostCreatePage.vue";
 import ProfilePage from "../pages/ProfilePage.vue";
 import PostDeleteUpdatePage from "../pages/PostDeleteUpdatePage.vue";
 import CommentPage from "../pages/CommentPage.vue"
+import UserProfilePage from "../pages/UserProfilePage.vue"
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -26,6 +27,11 @@ const routes = [
     path: "/comment/:postId",
     name: "CommentPage",
     component: CommentPage,
+  },
+  {
+    path: "/user/:username",
+    name: "UserProfilePage",
+    component: UserProfilePage,
   },
 ];
 

@@ -3,9 +3,19 @@
     <div class="main">
       <div v-if="postData && postData.posts">
         <div class="card" v-for="post in postData.posts" :key="post._id">
+          <button v-if="localStorageData!=post.author" @click="userProfile(post.author)" class="authorButton">
+            <img src="../assets/user.png" alt="user" class="userImg" />{{
+              post.author
+            }}
+          </button>
           <span class="title">{{ post.title }}</span>
           <span class="content">{{ post.content }}</span>
-          <span class="author">Written by {{ post.author }}</span>
+          <div class="divTags">
+            <div v-for="(tag, index) in post.tags" :key="index">
+              <button class="buttonTags">{{ tag }}</button>
+            </div>
+          </div>
+
           <span class="date">{{ formatDateTime(post.dateTime) }}</span>
           <div class="voteSpan">
             <span class="likes">{{ post.like_counter }} likes</span>
@@ -70,6 +80,12 @@ export default {
     },
     commentPost(post) {
       this.$router.push({ path: `/comment/${post}`, params: { postId: post } });
+    },
+    userProfile(author) {
+      this.$router.push({
+        path: `/user/${author}`,
+        params: { authorName: author },
+      });
     },
     async toggleLike(postId) {
       this.updateButtonState(postId, this.buttonStates[postId] === 1 ? 0 : 1);
