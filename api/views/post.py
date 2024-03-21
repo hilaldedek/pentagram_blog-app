@@ -115,4 +115,30 @@ class PostDetail(Resource):
             collectionVote.delete_many({"postID": post_id})
             return jsonify({"message": "Post deleted successfully"})
         else:
-            return jsonify({"message": "Post is not found"})
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
+
+
+class PostSearch(Resource):
+    @cross_origin()
+    def get(self, post_tag):
+        posts = Post.objects(tags=post_tag)
+        post_list = []
+        for post in posts:
+            post_data = {
+                "id": str(post.id),
+                "author": str(post.author.username),
+                "title": post.title,
+                "content": post.content,
+                "dateTime": post.dateTime.isoformat(),
+                "tags": post.tags,
+                "like_counter": post.like_counter,
+                "dislike_counter": post.dislike_counter,
+            }
+            post_list.append(post_data)
+
+        return jsonify({"posts": post_list})

@@ -1,6 +1,21 @@
 <template>
   <div>
     <NavbarComponent />
+    <div v-if="username" class="infoDiv">
+      <div class="info">
+        <h2 class="authorName">{{ username }}</h2>
+        <div class="follow">
+          <div>
+            <h3>Followers</h3>
+            <h3 class="center">{{ followers }}</h3>
+          </div>
+          <div>
+            <h3>Follow</h3>
+            <h3 class="center">{{ follow }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="main">
       <div v-if="posts.length === 0" class="createPost">
         <p>You don't have any posts.</p>
@@ -11,7 +26,7 @@
           <span class="title">{{ post.title }}</span>
           <span class="content">{{ post.content }}</span>
           <span class="author">{{ post.author }}</span>
-          <span class="dateTime">{{ formatDateTime(post.dateTime) }}</span>
+          <span class="dateTime">{{ post.dateTime }}</span>
           <div>
             <div class="UDButtons">
               <button @click="updatePost(post)" class="button buttonUpdate">
@@ -36,7 +51,13 @@ export default {
   data() {
     return {
       posts: [],
+      follow: null,
+      followers: null,
+      username: "",
     };
+  },
+  mounted() {
+    this.getUserInfo();
   },
   created() {
     this.fetchUserPosts();
@@ -62,15 +83,31 @@ export default {
         console.error("Error fetching user posts:", error);
       }
     },
-    formatDateTime(dateTime) {
-      const options = {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-      };
-      return new Date(dateTime).toLocaleString("tr-TR", options);
+    getUserInfo() {
+      const getToken = localStorage.getItem("access_token");
+      const username = localStorage.getItem("username");
+      fetch(`http://127.0.0.1:5000/user/${username}/follow`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          console.log("RESPONSE: ", response);
+          return response.json();
+        })
+        .then((data) => {
+          console.log("PROFILE PAGE:", data);
+          this.follow = data.followInfo[0].follow;
+          this.followers = data.followInfo[0].followers;
+          this.username = data.followInfo[0].username;
+        })
+        .catch((error) => {
+          console.error("Error fetching user info:", error);
+        });
     },
     updatePost(post) {
       this.$router.push({ path: `/post/${post._id}`, props: { postContent: post.content, postTitle:post.title } });

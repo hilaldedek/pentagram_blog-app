@@ -9,7 +9,6 @@
 <script>
 import PostComponent from "@/components/PostComponent.vue";
 import NavbarComponent from "@/components/NavbarComponent.vue";
-// import FooterComponent from "@/components/FooterComponent.vue";
 
 
 /**

@@ -3,7 +3,11 @@
     <div class="main">
       <div v-if="postData && postData.posts">
         <div class="card" v-for="post in postData.posts" :key="post._id">
-          <button v-if="localStorageData!=post.author" @click="userProfile(post.author)" class="authorButton">
+          <button
+            v-if="localStorageData != post.author"
+            @click="userProfile(post.author)"
+            class="authorButton"
+          >
             <img src="../assets/user.png" alt="user" class="userImg" />{{
               post.author
             }}
