@@ -150,7 +150,7 @@ class FollowUser(Resource):
                             "status": "200",
                         }
                     ),
-                    404,
+                    200,
                 )
             else:
                 return make_response(
@@ -186,7 +186,7 @@ class UserProfilePostList(Resource):
                     "title": post.title,
                     "content": post.content,
                     "author": post.author.username,
-                    "dateTime": post.dateTime.strftime("%d %m %Y %H %M %S"),
+                    "dateTime": post.dateTime,
                     "tags": post.tags,
                     "like_counter": post.like_counter,
                     "dislike_counter": post.dislike_counter,
