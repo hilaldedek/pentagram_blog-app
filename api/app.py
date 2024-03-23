@@ -27,6 +27,7 @@ Note: The backend is configured to run with a MongoDB database. Make sure to set
 
 """
 
+import os
 from flask import Flask
 from mongoengine import *
 from flask_jwt_extended import JWTManager
@@ -37,20 +38,20 @@ from views.user import *
 from views.post import *
 from views.comment_vote import *
 
-
+  
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins="*")
+CORS(app, supports_credentials=True, origins="*", host=8000)
 api = Api(app)
 app.config.from_object(config)
 
 jwt = JWTManager(app)
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
-
 
 def mongodb():
-    connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
+    mongodb_path = os.getenv(
+        "MONGO_URI", "mongodb://localhost:27017/?directConnection=true"
+    )
+    connect("pentagram_db", host=mongodb_path)
 
 
 mongodb()
@@ -67,3 +68,7 @@ api.add_resource(CommentDetail, "/comment/<int:comment_id>")
 api.add_resource(CommentList, "/comment-list/<int:post_id>")
 api.add_resource(VoteProcedure, "/post/<int:post_id>/vote")
 api.add_resource(VoteList, "/post/vote_list")
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")

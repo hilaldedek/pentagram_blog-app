@@ -1,4 +1,5 @@
-from flask import jsonify, request
+import os
+from flask import jsonify, make_response, request
 from pymongo import MongoClient
 from mongoengine import *
 from models.post import Post
@@ -10,37 +11,39 @@ from flask_cors import cross_origin
 from datetime import datetime
 from flask_restful import Resource
 
-client = MongoClient("mongodb://localhost:27017/?directConnection=true")
+client = MongoClient(
+    os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
+)
 database = client["pentagram_db"]
 collectionPost = database["post"]
 collectionComment = database["comment_vote"]
 collectionVote = database["vote"]
-try:
-    connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-except Exception as error:
-    jsonify({"message": ConnectionError})
+# try:
+#     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
+# except Exception as error:
+#     jsonify({"message": ConnectionError})
 
 
 def get_formatted_post():
-    posts = list(collectionPost.find().sort("dateTime", -1))
+    posts = list(Post.objects.order_by("-dateTime"))
     formatted_posts = [
         {
-            "_id": str(post["_id"]),
-            "title": post["title"],
-            "content": post["content"],
-            "author": str(post["author"]),
-            "dateTime": post["dateTime"].isoformat(),
-            "like_counter": post["like_counter"],
-            "dislike_counter": post["dislike_counter"],
+            "_id": str(post._id),
+            "title": post.title,
+            "content": post.content,
+            "author": str(post.author),
+            "dateTime": post.dateTime.isoformat(),
+            "like_counter": post.like_counter,
+            "dislike_counter": post.dislike_counter,
         }
         for post in posts
     ]
     return formatted_posts
 
 
-def get_post_detail_by_user(user_id, post_id):
+def get_post_detail_by_user(user_id):
     results = collectionPost.find(
-        {"author": f"{user_id}", "_id": post_id}
+        {"author": f"{user_id}"}
     )  # The value from the url was searched in the database
     results_list = list(results)
     return results_list
@@ -50,7 +53,10 @@ class PostList(Resource):
     @cross_origin()
     def get(self):
         posts = get_formatted_post()
-        return (jsonify({"posts": posts}), 200)
+        return make_response(
+            jsonify({"posts": posts, "status": "200"}),
+            200,
+        )
 
 
 class PostCreate(Resource):
@@ -70,7 +76,17 @@ class PostCreate(Resource):
         )
         meta = {"collection": "post"}  # Collection name to save the user to
         new_post.save()
-        return jsonify({"message": "Post created successfully"})
+        post_id = str(new_post.id)
+        return make_response(
+            jsonify(
+                {
+                    "message": "Post created successfully",
+                    "post_id": post_id,
+                    "status": "201",
+                }
+            ),
+            201,
+        )
 
 
 class UserPost(Resource):
@@ -85,7 +101,10 @@ class UserPost(Resource):
         if json_data is not None:
             return json_data
         else:
-            return jsonify({"message": "Posts is not found"})
+            return make_response(
+                jsonify({"message": "Posts is not found", "status": "404"}),
+                404,
+            )
 
 
 class PostDetail(Resource):
@@ -93,19 +112,30 @@ class PostDetail(Resource):
     @cross_origin()
     def put(self, post_id):
         current_user_id = get_jwt_identity()
-        results = get_post_detail_by_user(current_user_id, post_id)
-        if results.__len__() != 0:
+        results = collectionPost.find({"author": f"{current_user_id}", "_id": post_id})
+        results_list = list(results)
+        if len(results_list) != 0:
             data = request.get_json()
             collectionPost.update_one({"_id": post_id}, {"$set": data})
-            return jsonify({"msg": "post updated successfully"}), 200
+            return make_response(
+                jsonify({"message": "post updated successfully", "status": "200"}),
+                200,
+            )
         else:
-            return jsonify({"msg": "This post does not belong to you"})
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
 
     @jwt_required()
     def delete(self, post_id):
         current_user_id = get_jwt_identity()
-        results = get_post_detail_by_user(current_user_id, post_id)
-        if results.__len__() != 0:
+        results = collectionPost.find({"author": f"{current_user_id}", "_id": post_id})
+        results_list = list(results)
+        (results_list)
+        if len(results_list) != 0:
             collectionPost.delete_one(
                 {"_id": post_id}
             )  # deleting the data whose id is given
@@ -113,6 +143,14 @@ class PostDetail(Resource):
                 {"postID": post_id}
             )  # If the post is deleted, the comments made on the post will be deleted.
             collectionVote.delete_many({"postID": post_id})
-            return jsonify({"message": "Post deleted successfully"})
+            return make_response(
+                jsonify({"message": "Post deleted successfully", "status": "200"}),
+                200,
+            )
         else:
-            return jsonify({"message": "Post is not found"})
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
