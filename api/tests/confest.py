@@ -4,7 +4,6 @@ from models.comment_vote import Comment_vote
 from models.user import User
 from models.post import Post
 from models.vote import Vote
-import pytest
 from mongoengine import *
 from app import app
 import mongomock
@@ -56,13 +55,13 @@ second_user_data = {
 }
 
 post_data = {
-    "author": "user1",
+    "author": 1,
     "title": "Snow-white",
     "content": "abc",
 }
 
 post_data2 = {
-    "author": "user2",
+    "author": 2,
     "title": "def",
     "content": "abc",
 }
@@ -71,6 +70,7 @@ update_post_data1 = {
     "title": "Cinderella",
     "content": "def",
 }
+
 update_post_data2 = {
     "title": "Cinderella",
     "content": "def",
@@ -78,7 +78,7 @@ update_post_data2 = {
 
 comment_data1 = {"comment": "it's very nice!"}
 
-comment_data2 = {"comment": "it's very nice!"}
+comment_data2 = {"comment": "very nice!"}
 
 
 update_comment_data = {"comment": "this comment updated!"}
@@ -98,7 +98,7 @@ def new_user_create():
         )
         new_user.set_password(password=first_user_data.get("password"))
         new_user.save()
-        return new_user.username
+        return new_user.id
 
 
 def create_post():
@@ -123,7 +123,7 @@ def create_post_user2():
 
 def create_comment(post_id):
     new_comment = Comment_vote(
-        person=first_user_data.get("username"),
+        person=post_data.get("author"),
         postID=post_id,
         comment=comment_data1.get("comment"),
     )
