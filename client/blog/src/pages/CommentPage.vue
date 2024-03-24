@@ -113,6 +113,7 @@ export default {
     async getCommentData() {
       try {
         const postId = this.$route.params.postId;
+        console.log("postId: ", postId);
         const response = await fetch(
           `http://127.0.0.1:5000/comment-list/${postId}`,
           {
@@ -129,9 +130,11 @@ export default {
         }
 
         const commentData = await response.json();
-        this.comments = commentData;
+        this.comments = commentData.comments;
+        console.log(commentData[1]);
+        console.log(commentData);
       } catch (error) {
-        console.error("Veri alınamadı:", error);
+        console.log("Veri alınamadı:", error);
       }
     },
     async createComment() {
