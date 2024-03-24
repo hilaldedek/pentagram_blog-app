@@ -59,7 +59,9 @@ class CommentDetail(Resource):
         if comments:
             return jsonify(comments.to_json())
         else:
-            return jsonify({"message": "Comment is not found"})
+            return make_response(
+                jsonify({"message": "Comment is not found", "status": "404"}), 404
+            )
 
     @jwt_required()
     @cross_origin()
@@ -75,7 +77,12 @@ class CommentDetail(Resource):
                 200,
             )
         else:
-            return jsonify({"msg": "This comment does not belong to you"})
+            return make_response(
+                jsonify(
+                    {"message": "This comment does not belong to you", "status": "403"}
+                ),
+                403,
+            )
 
     @jwt_required()
     def delete(self, comment_id):

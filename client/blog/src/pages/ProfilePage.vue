@@ -32,7 +32,7 @@
 import NavbarComponent from "@/components/NavbarComponent.vue";
 
 export default {
-  components: { NavbarComponent},
+  components: { NavbarComponent },
   data() {
     return {
       posts: [],
@@ -74,7 +74,10 @@ export default {
       return new Date(dateTime).toLocaleString("tr-TR", options);
     },
     updatePost(post) {
-      this.$router.push({ path: `/post/${post._id}`, props: { postContent: post.content, postTitle:post.title } });
+      this.$router.push({
+        path: `/post/${post._id}`,
+        props: { postContent: post.content, postTitle: post.title },
+      });
     },
     async deletePost(post) {
       const getToken = localStorage.getItem("access_token");
@@ -84,7 +87,7 @@ export default {
         headers: {
           Authorization: `Bearer ${getToken}`,
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "http:/localhost:8080",
+          "Access-Control-Allow-Origin": "*",
         },
       });
       if (!response.ok) {

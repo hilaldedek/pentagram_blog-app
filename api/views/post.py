@@ -103,7 +103,12 @@ class PostDetail(Resource):
                 jsonify({"message": "Post updated successfully", "status": "200"}), 200
             )
         else:
-            return jsonify({"msg": "This post does not belong to you"})
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
 
     @jwt_required()
     def delete(self, post_id):
@@ -116,4 +121,9 @@ class PostDetail(Resource):
                 jsonify({"message": "Post deleted successfully", "status": "200"}), 200
             )
         else:
-            return jsonify({"message": "Post is not found"})
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
