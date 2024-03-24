@@ -105,7 +105,10 @@ class UserPost(Resource):
                 jsonify({"posts": formatted_posts, "status": "200"}), 200
             )
         else:
-            return jsonify({"message": "Posts is not found"})
+            return make_response(
+                jsonify({"message": "Posts is not found", "status": "404"}),
+                404,
+            )
 
 
 class PostDetail(Resource):
@@ -132,8 +135,9 @@ class PostDetail(Resource):
     @jwt_required()
     def put(self, post_id):
         current_user_id = get_jwt_identity()
-        results = get_post_detail_by_user(current_user_id, post_id)
-        if results.__len__() != 0:
+        results = collectionPost.find({"author": f"{current_user_id}", "_id": post_id})
+        results_list = list(results)
+        if len(results_list) != 0:
             data = request.get_json()
             tags_data = remove_duplicates_maintain_order(data.get("tags"))
             new_data = [item.lower() for item in tags_data]
@@ -144,13 +148,20 @@ class PostDetail(Resource):
                 jsonify({"message": "Post updated successfully", "status": "200"}), 200
             )
         else:
-            return jsonify({"msg": "This post does not belong to you"})
+            return make_response(
+                jsonify(
+                    {"message": "This post does not belong to you", "status": "403"}
+                ),
+                403,
+            )
 
     @jwt_required()
     def delete(self, post_id):
         current_user_id = get_jwt_identity()
-        results = get_post_detail_by_user(current_user_id, post_id)
-        if results.__len__() != 0:
+        results = collectionPost.find({"author": f"{current_user_id}", "_id": post_id})
+        results_list = list(results)
+        (results_list)
+        if len(results_list) != 0:
             collectionPost.delete_one(
                 {"_id": post_id}
             )  # deleting the data whose id is given
@@ -158,7 +169,10 @@ class PostDetail(Resource):
                 {"postID": post_id}
             )  # If the post is deleted, the comments made on the post will be deleted.
             collectionVote.delete_many({"postID": post_id})
-            return jsonify({"message": "Post deleted successfully"})
+            return make_response(
+                jsonify({"message": "Post deleted successfully", "status": "200"}),
+                200,
+            )
         else:
             return make_response(
                 jsonify(

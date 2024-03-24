@@ -32,7 +32,7 @@
 import NavbarComponent from "@/components/NavbarComponent.vue";
 
 export default {
-  components: { NavbarComponent},
+  components: { NavbarComponent },
   data() {
     return {
       posts: [],
@@ -90,7 +90,7 @@ export default {
         headers: {
           Authorization: `Bearer ${getToken}`,
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "http:/localhost:8080",
+          "Access-Control-Allow-Origin": "*",
         },
       });
       if (!response.ok) {
