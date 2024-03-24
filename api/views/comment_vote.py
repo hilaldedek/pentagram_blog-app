@@ -115,8 +115,6 @@ class CommentList(Resource):
             }
             for comment in comments
         ]
-        print(formatted_comments)
-        print(type(formatted_comments))
         return make_response(
             jsonify({"comments": formatted_comments, "status": "200"}), 200
         )

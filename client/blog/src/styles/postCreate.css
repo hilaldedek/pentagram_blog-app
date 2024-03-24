@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap");
 @import url("../styles/variables.css");
+.main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
 .container {
   margin-top: 6rem;
   display: flex;
@@ -26,7 +32,7 @@
 .content__inputs {
   display: flex;
   flex-direction: column;
-  row-gap:2rem;
+  row-gap: 2rem;
 }
 
 .content__form label {
@@ -59,8 +65,8 @@
   height: 3rem;
 }
 .content__form .content {
-    height: 10rem;
-  }
+  height: 10rem;
+}
 
 .content__form input:valid + span {
   transform: scale(calc(10 / 12)) translateY(-10px);
@@ -115,11 +121,97 @@
   cursor: pointer;
   font-family: "Raleway", sans-serif;
 }
-.titleInput{
+.titleInput {
   font-family: "Lora", serif;
 }
-.contentInput{
+.contentInput {
   font-family: "Lora", serif;
   height: 100%;
   width: auto;
+}
+
+.tag {
+  display: flex;
+  flex-direction: row;
+}
+.tagInput {
+  margin-right: 1rem;
+}
+
+.button {
+  margin-left: 0.5rem;
+  position: relative;
+  width: 2.8rem;
+  height: 2.3rem;
+  border: none;
+  border-radius: 20px;
+}
+
+.X {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 33%;
+  width: 1rem;
+  height: 1.5px;
+  background-color: #fff;
+  transform: rotate(45deg);
+}
+
+.Y {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 33%;
+  width: 1rem;
+  height: 1.5px;
+  background-color: #fff;
+  transform: rotate(-45deg);
+}
+
+.close {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: -40%;
+  left: 70%;
+  width: 3em;
+  height: 1.7em;
+  font-size: 16px;
+  background-color: rgb(254, 255, 225);
+  color: #000;
+  border: 1px solid #000;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.button:hover {
+  background-color: rgb(210, 0, 0);
+}
+
+.button:active {
+  background-color: rgb(130, 0, 0);
+}
+
+.button:hover > .close {
+  animation: close 0.2s forwards 1.25s;
+}
+
+.tagsInput {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.ul {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  max-width: 300px;
+}
+
+@keyframes close {
+  100% {
+    opacity: 1;
+  }
 }

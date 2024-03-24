@@ -1,32 +1,61 @@
 <template>
   <div>
     <NavbarComponent />
-    <div class="container">
-      <div class="content">
-        <h1 class="header">Create Post</h1>
-        <form class="content__form" @submit.prevent="createPost">
-          <div class="content__inputs">
-            <label class="title">
-              <textarea
-                v-model="title"
-                required=""
-                type="text"
-                placeholder="Title"
-                class="titleInput"
-              />
-            </label>
-            <label class="content">
-              <textarea
-                v-model="content"
-                required=""
-                type="text"
-                placeholder="Content"
-                class="contentInput"
-              />
-            </label>
+    <div class="main">
+      <div class="container">
+        <div class="content">
+          <h1 class="header">Create Post</h1>
+          <form class="content__form" @submit.prevent="createPost">
+            <div class="content__inputs">
+              <label class="title">
+                <textarea
+                  v-model="title"
+                  required=""
+                  type="text"
+                  placeholder="Title"
+                  class="titleInput"
+                />
+              </label>
+              <label class="content">
+                <textarea
+                  v-model="content"
+                  required=""
+                  type="text"
+                  placeholder="Content"
+                  class="contentInput"
+                />
+              </label>
+            </div>
+            <button type="submit">Create</button>
+          </form>
+        </div>
+      </div>
+      <div>
+        <form class="content__form" @submit.prevent="addTag">
+          <div class="tag">
+            <div class="content__inputs">
+              <label class="tagInput">
+                <textarea
+                  v-model="tagInput"
+                  required=""
+                  type="text"
+                  placeholder="Tags"
+                  class="titleInput"
+                />
+              </label>
+            </div>
+            <button type="submit">Add</button>
           </div>
-          <button>Create</button>
         </form>
+        <ul class="ul">
+          <div v-for="(tag, index) in tags" :key="index" class="tagsInput">
+            <h2>{{ tag }}</h2>
+            <button class="button" @click="removeTag(index)">
+              <span class="X"></span>
+              <span class="Y"></span>
+            </button>
+          </div>
+        </ul>
       </div>
     </div>
   </div>
@@ -41,6 +70,8 @@ export default {
     return {
       title: "",
       content: "",
+      tags: [],
+      tagInput: "",
     };
   },
   components: {
@@ -60,6 +91,7 @@ export default {
           body: JSON.stringify({
             title: this.title,
             content: this.content,
+            tags: this.tags,
           }),
         });
 
@@ -72,6 +104,15 @@ export default {
       } catch (error) {
         console.error("Error during creating post:", error);
       }
+    },
+    addTag() {
+      if (this.tagInput.trim() !== "") {
+        this.tags.push(this.tagInput);
+        this.tagInput = "";
+      }
+    },
+    removeTag(index) {
+      this.tags.splice(index, 1);
     },
   },
 };
