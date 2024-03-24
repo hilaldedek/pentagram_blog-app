@@ -8,5 +8,6 @@ class Post(Document):
     title = StringField(required=True)
     content = StringField(required=True)
     dateTime = DateTimeField()
+    tags = ListField(StringField(max_length=20))
     like_counter = IntField(min_value=0)
     dislike_counter = IntField(min_value=0)

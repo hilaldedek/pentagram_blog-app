@@ -6,10 +6,10 @@ from mongoengine import connect
 
 
 def mongodb():
-    load_dotenv()
-    mongo_uri = os.environ.get("MONGO_URI")
-    print(mongo_uri)
-    connect(host=mongo_uri, alias="default")
+    # load_dotenv()
+    # mongo_uri = os.environ.get("MONGO_URI")
+    # connect(host=mongo_uri, alias="default")
+    connect(host="mongodb://localhost:27017/pentagram_db", alias="default")
 
 
 class BaseConfig(object):

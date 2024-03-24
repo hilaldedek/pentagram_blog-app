@@ -4,7 +4,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 @import url("../styles/variables.css");
 .main {
-  margin-top: 100px;
+  margin-top: 2rem;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

@@ -37,22 +37,177 @@
   color: var(--navbar-text-color);
   font-family: "Raleway", sans-serif;
 }
-.userSection{
+.userSection {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-.user{
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+.userButtonStyle {
+  border-radius: 40px;
+  margin-right: 1rem;
+  height: 3rem;
+  border: none;
+  text-decoration: none;
+  padding: 1rem;
+  font-size: 1.3rem;
+  font-weight: 500;
   font-family: "DM Serif Display", serif;
-  font-weight: 300;
-  color: #5F0F40;
+  color: #5f0f40;
 }
-.userImg{
+.userImg {
   width: 2rem;
   height: 2rem;
 }
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  font-family: "Raleway", sans-serif;
+}
+
+.search__input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border: none;
+  color: #646464;
+  padding: 0.7rem 1rem;
+  border-radius: 30px;
+  width: 12em;
+  transition: all ease-in-out 0.5s;
+  margin-right: -2rem;
+}
+
+.search__input:hover,
+.search__input:focus {
+  box-shadow: 0 0 1em #00000013;
+}
+
+.search__input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+.search__input:focus + .search__button {
+  background-color: #f0eeee;
+}
+
+.search__button {
+  border: none;
+  background-color: #f4f2f2;
+  margin-top: 0.1em;
+}
+
+.search__button:hover {
+  cursor: pointer;
+}
+
+.search__icon {
+  height: 1.3em;
+  width: 1.3em;
+  fill: #b4b4b4;
+}
+
+/* .......................... */
+
+.paste-button {
+  position: relative;
+  display: block;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.button {
+  margin-right: 1rem;
+  background-color: var(--navbar-button-color);
+  color: var(--navbar-text-color);
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: "DM Serif Display", serif;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  margin-right: 1rem;
+  display: none;
+  font-size: 13px;
+  position: absolute;
+  z-index: 1;
+  min-width: 200px;
+  border: none;
+  border-radius: 0px 15px 15px 15px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content a {
+  color: var(--navbar-button-color);
+  padding: 8px 10px;
+  text-decoration: none;
+  display: block;
+  transition: 0.1s;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--navbar-text-color);
+  color: #212121;
+}
+
+.dropdown-content a:focus {
+  background-color: #212121;
+  color: #4caf50;
+}
+.dropdown-content button {
+  border: none;
+  color: var(--navbar-button-color);
+  padding: 8px 10px;
+  text-decoration: none;
+  display: block;
+  transition: 0.1s;
+}
+.dropdown-content #top:hover {
+  border-radius: 0px 13px 0px 0px;
+}
+
+/* .dropdown-content #bottom:hover {
+  border-radius: 0px 0px 13px 13px;
+} */
+
+.paste-button:hover button {
+  border-radius: 15px 15px 0px 0px;
+}
+
+.paste-button:hover .dropdown-content {
+  display: block;
+}
+.router-link-like {
+  background-color: transparent;
+  border: none;
+  color: var(--navbar-button-color);
+  padding: 8px 10px;
+  text-decoration: none;
+  display: block;
+  transition: 0.1s;
+}
+
+.router-link-like:hover {
+  background-color: var(--navbar-text-color);
+  color: #212121;
+}
+
+.router-link-like:focus {
+  background-color: #212121;
+  color: #4caf50;
+}
+
 @media (max-width: 700px) {
   .main {
     display: flex;

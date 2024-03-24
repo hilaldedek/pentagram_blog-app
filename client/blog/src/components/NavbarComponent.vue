@@ -68,7 +68,6 @@ export default {
         console.error("Error during login:", error);
       }
     },
-
     async logout() {
       const token = localStorage.getItem("access_token");
       try {
