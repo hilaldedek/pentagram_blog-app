@@ -1,6 +1,11 @@
-from collections import OrderedDict
-from flask import jsonify, make_response, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import jsonify, request,make_response
+from pymongo import MongoClient
+from mongoengine import *
+from models.post import Post
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity,
+)
 from flask_cors import cross_origin
 from datetime import datetime
 from flask_restful import Resource
@@ -184,7 +189,7 @@ class PostSearch(Resource):
         for post in posts:
             post_data = {
                 "id": str(post.id),
-                "author": str(post.author.id),
+                "author": str(post.author.username),
                 "title": post.title,
                 "content": post.content,
                 "dateTime": post.dateTime.isoformat(),

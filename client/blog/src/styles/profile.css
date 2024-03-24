@@ -167,3 +167,31 @@
   font-family: "Raleway", sans-serif;
   font-weight: 800;
 }
+/* follow Info */
+.infoDiv{
+  margin-top: 8rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.info {
+  font-family: "Raleway", sans-serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+}
+.center {
+  text-align: center;
+  font-size: 2rem;
+}
+.follow {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+.authorName {
+  font-family: "DM Serif Display", serif;
+  font-size: 2.5rem;
+}

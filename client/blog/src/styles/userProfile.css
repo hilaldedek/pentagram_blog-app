@@ -1,9 +1,86 @@
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Kalnia:wght@500&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
-@import url("../styles/variables.css");
 .main {
+  margin-top: 8rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.info {
+  font-family: "Raleway", sans-serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+}
+.center {
+  text-align: center;
+  font-size: 2rem;
+}
+.follow {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+.authorName {
+  font-family: "DM Serif Display", serif;
+  font-size: 2.5rem;
+}
+.followButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0.8rem;
+}
+.tooltip-container {
+  width: 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s;
+  background-color: rgb(255, 255, 255);
+  padding: 0 0.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid rgb(211, 211, 211);
+  font-family: "Raleway", sans-serif;
+  height: 2.5rem;
+}
+
+.text {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+}
+/* Error Message */
+.messageDiv{
+  display: flex;
+  justify-content: center;
+}
+.userMessage {
+  width: 50%;
+  position: relative;
+  margin: auto;
+  border-radius: 10px;
+  margin: 5rem;
+  padding: 3rem;
+  background-color: #a87c7c82;
+}
+.message p {
+  font-size: 1.5rem;
+  color: #a87c7c;
+  font-family: "Kalnia", serif;
+  text-align: center;
+}
+
+/* User Post List */
+.mainCard {
   margin-top: 2rem;
   display: flex;
   justify-content: center;
