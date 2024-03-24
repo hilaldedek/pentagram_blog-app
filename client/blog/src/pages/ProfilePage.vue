@@ -78,7 +78,8 @@ export default {
         }
 
         const responseData = await response.json();
-        this.posts = responseData;
+        this.posts = responseData.posts;
+        console.log(responseData);
       } catch (error) {
         console.error("Error fetching user posts:", error);
       }

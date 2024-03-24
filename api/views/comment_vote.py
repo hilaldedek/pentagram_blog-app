@@ -1,6 +1,6 @@
-import os
+import json
+from bson import ObjectId
 from flask import jsonify, make_response, request
-from pymongo import MongoClient
 from mongoengine import *
 from models.comment_vote import Comment_vote
 from models.vote import Vote
@@ -10,24 +10,11 @@ from flask_jwt_extended import (
 )
 from flask_cors import cross_origin
 from flask_restful import Resource
+from models.post import Post
+from models.user import User
+from config import mongodb
 
-client = MongoClient(
-    os.getenv("MONGO_URI", "mongodb://localhost:27017/?directConnection=true")
-)
-database = client["pentagram_db"]
-collectionPost = database["post"]
-collectionComment = database["comment_vote"]
-collectionVote = database["vote"]
-# try:
-#     connect("pentagram_db", host="mongodb://localhost:27017/?directConnection=true")
-# except Exception as error:
-#     jsonify({"message": ConnectionError})
-
-
-def get_comment_detail_by_user(comment_id, user_id):
-    results_update = collectionComment.find({"_id": comment_id, "person": f"{user_id}"})
-    results_list_update = list(results_update)
-    return results_list_update
+mongodb()
 
 
 class CommentCreate(Resource):
@@ -37,20 +24,29 @@ class CommentCreate(Resource):
         if request.method == "POST":
             data = request.get_json()
             current_user_id = get_jwt_identity()  # current user
-            result = collectionPost.find_one({"_id": post_id})
-            if result is not None:
-                new_comment = Comment_vote(
-                    person=current_user_id,
-                    postID=post_id,
-                    comment=data.get("comment"),
-                )
-                meta = {
-                    "collection": "comment_vote"
-                }  # Collection name to save the user to
-                new_comment.save()
+            result_post = Post.objects(_id=post_id).first()
+            if result_post:
+                current_user = User.objects(username=current_user_id).first()
+                if current_user:
+                    new_comment = Comment_vote(
+                        person=current_user,
+                        postID=result_post,
+                        comment=data.get("comment"),
+                    )
+                    new_comment.save()
+                    return make_response(
+                        jsonify(
+                            {"message": "Comment saved successfully", "status": "200"}
+                        ),
+                        200,
+                    )
+                else:
+                    return make_response(
+                        jsonify({"message": "User not found", "status": "404"}), 404
+                    )
+            else:
                 return make_response(
-                    jsonify({"message": "Comment saved successfully", "status": "200"}),
-                    200,
+                    jsonify({"message": "Post not found", "status": "404"}), 404
                 )
 
 
@@ -58,11 +54,10 @@ class CommentDetail(Resource):
     @jwt_required()
     def get(self, comment_id):
         current_user_id = get_jwt_identity()
-        comments = get_comment_detail_by_user(comment_id, current_user_id)
-        json_data = jsonify(comments)
-
-        if json_data is not None:
-            return json_data
+        current_user = User.objects(_id=current_user_id).first()
+        comments = Comment_vote.objects(id=comment_id, person=current_user).first()
+        if comments:
+            return jsonify(comments.to_json())
         else:
             return make_response(
                 jsonify({"message": "Comment is not found", "status": "404"}), 404
@@ -72,12 +67,13 @@ class CommentDetail(Resource):
     @cross_origin()
     def put(self, comment_id):
         current_user_id = get_jwt_identity()
-        comments = get_comment_detail_by_user(comment_id, current_user_id)
-        if comments.__len__() != 0:
+        current_user = User.objects(username=current_user_id).first()
+        comments = Comment_vote.objects(_id=comment_id, person=current_user).first()
+        if comments:
             data = request.get_json()
-            collectionComment.update_one({"_id": comment_id}, {"$set": data})
+            comments.update(**data)
             return make_response(
-                jsonify({"message": "comment updated successfully", "status": "200"}),
+                jsonify({"message": "Comment updated successfully", "status": "200"}),
                 200,
             )
         else:
@@ -91,28 +87,39 @@ class CommentDetail(Resource):
     @jwt_required()
     def delete(self, comment_id):
         current_user_id = get_jwt_identity()
-        comments = get_comment_detail_by_user(comment_id, current_user_id)
-        if comments.__len__() != 0:
-            collectionComment.delete_one(
-                {"_id": comment_id}
-            )  # deleting the data whose id is given
+        current_user = User.objects(username=current_user_id).first()
+        comments = Comment_vote.objects(_id=comment_id, person=current_user).first()
+        if comments:
+            comments.delete()
             return make_response(
                 jsonify({"message": "Comment deleted successfully", "status": "200"}),
                 200,
+            )
+        else:
+            return make_response(
+                jsonify(
+                    {"message": "This comment does not belong to you", "status": "403"}
+                ),
+                403,
             )
 
 
 class CommentList(Resource):
     def get(self, post_id):
-        results = collectionComment.find({"postID": post_id})
-        results_list = list(results)
-        json_data = results_list
-        if json_data is not None:
-            return jsonify(json_data)
-        else:
-            return make_response(
-                jsonify({"message": "Post is not found", "status": "404"}), 404
-            )
+        comments = Comment_vote.objects(postID=post_id)
+        formatted_comments = [
+            {
+                "_id": str(comment.id),
+                "comment": comment.comment,
+                "person": comment.person.username,
+            }
+            for comment in comments
+        ]
+        print(formatted_comments)
+        print(type(formatted_comments))
+        return make_response(
+            jsonify({"comments": formatted_comments, "status": "200"}), 200
+        )
 
 
 class VoteProcedure(Resource):
@@ -120,91 +127,60 @@ class VoteProcedure(Resource):
     @cross_origin()
     def post(self, post_id):
         data = request.get_json()
-        current_user_id = get_jwt_identity()  # current user
-        resultVote = collectionVote.find_one(
-            {"person": current_user_id, "postID": post_id}
-        )
+        current_username = get_jwt_identity()
+        print(current_username)
+        current_user = User.objects(username=current_username).first().id
+        print(current_user, type(current_user))
+        resultVote = Vote.objects(person=current_user, postID=post_id).first()
         dataVote = data.get("vote")
-        resultPost = collectionPost.find_one({"_id": post_id})
+        resultPost = Post.objects(_id=post_id).first()
+        resultPost_id = resultPost.id
+        print(resultPost)
 
-        if resultPost is not None:
-            current_like_counter = resultPost.get("like_counter", 0)
-            current_dislike_counter = resultPost.get("dislike_counter", 0)
+        if resultPost:
+            current_like_counter = (
+                resultPost.like_counter if resultPost.like_counter else 0
+            )
+            current_dislike_counter = (
+                resultPost.dislike_counter if resultPost.dislike_counter else 0
+            )
         else:
             current_like_counter = 0
             current_dislike_counter = 0
-        if resultVote is not None:
-            collectionVote.update_one(
-                {"person": current_user_id, "postID": post_id}, {"$set": data}
-            )
-            if resultVote["vote"] == 1:
-                if dataVote == -1:
-                    collectionPost.update_one(
-                        {"_id": post_id},
-                        {
-                            "$set": {
-                                "like_counter": current_like_counter - 1,
-                                "dislike_counter": current_dislike_counter + 1,
-                            }
-                        },
-                    )
-                elif dataVote == 0:
-                    collectionPost.update_one(
-                        {"_id": post_id},
-                        {"$set": {"like_counter": current_like_counter - 1}},
-                    )
-            elif resultVote["vote"] == -1:
-                if dataVote == 1:
-                    collectionPost.update_one(
-                        {"_id": post_id},
-                        {
-                            "$set": {
-                                "like_counter": current_like_counter + 1,
-                                "dislike_counter": current_dislike_counter - 1,
-                            }
-                        },
-                    )
-                elif dataVote == 0:
-                    collectionPost.update_one(
-                        {"_id": post_id},
-                        {"$set": {"dislike_counter": current_dislike_counter - 1}},
-                    )
-            elif resultVote["vote"] == 0:
-                if dataVote == 1:
-                    collectionPost.update_one(
-                        {"_id": post_id},
-                        {"$set": {"like_counter": current_like_counter + 1}},
-                    )
-                elif dataVote == -1:
-                    collectionPost.update_one(
-                        {"_id": post_id},
-                        {"$set": {"dislike_counter": current_dislike_counter + 1}},
-                    )
-        else:
-            new_vote = Vote(
-                person=current_user_id,
-                postID=post_id,
-                vote=data.get("vote"),
-            )
-            if dataVote == 1:
-                collectionPost.update_one(
-                    {"_id": post_id},
-                    {"$set": {"like_counter": current_like_counter + 1}},
-                )
 
+        if resultVote:
+            resultVote.update(**data)
+            if resultVote.vote == 1:
+                if dataVote == -1:
+                    resultPost.update(dec__like_counter=1, inc__dislike_counter=1)
+                elif dataVote == 0:
+                    resultPost.update(dec__like_counter=1)
+            elif resultVote.vote == -1:
+                if dataVote == 1:
+                    resultPost.update(inc__like_counter=1, dec__dislike_counter=1)
+                elif dataVote == 0:
+                    resultPost.update(dec__dislike_counter=1)
+            elif resultVote.vote == 0:
+                if dataVote == 1:
+                    resultPost.update(inc__like_counter=1)
+                elif dataVote == -1:
+                    resultPost.update(inc__dislike_counter=1)
+        else:
+            current_user = User.objects(username=current_username).first().id
+            if dataVote == 1:
+                Post.objects(_id=post_id).update(inc__like_counter=1)
             elif dataVote == -1:
-                collectionPost.update_one(
-                    {"_id": post_id},
-                    {"$set": {"dislike_counter": current_dislike_counter + 1}},
-                )
-            meta = {
-                "collection": "collectionVote"
-            }  # Collection name to save the user to
-            new_vote.save()
-            return make_response(
-                jsonify({"message": "vote saved successfully", "status": "200"}), 200
+                Post.objects(_id=post_id).update(inc__dislike_counter=1)
+            new_vote = Vote(
+                person=current_user,
+                postID=resultPost_id,
+                vote=dataVote,
             )
-        return jsonify()
+            new_vote.save()
+
+        return make_response(
+            jsonify({"message": "Vote saved successfully", "status": "200"}), 200
+        )
 
 
 class VoteList(Resource):
@@ -212,12 +188,5 @@ class VoteList(Resource):
     @cross_origin()
     def get(self):
         current_user_id = get_jwt_identity()
-        results = collectionVote.find({"person": current_user_id}, {"_id": 0})
-        results_list = list(results)
-        json_data = results_list
-        if json_data is not None:
-            return jsonify(json_data)
-        else:
-            return make_response(
-                jsonify({"message": "Vote data is not found", "status": "404"}), 404
-            )
+        votes = Vote.objects(person=current_user_id)
+        return jsonify(votes.to_json())

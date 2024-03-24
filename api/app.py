@@ -49,15 +49,6 @@ app.config.from_object(config)
 jwt = JWTManager(app)
 
 
-def mongodb():
-    mongodb_path = os.getenv(
-        "MONGO_URI", "mongodb://localhost:27017/?directConnection=true"
-    )
-    connect("pentagram_db", host=mongodb_path)
-
-
-mongodb()
-
 api.add_resource(Login, "/user/auth/login")
 api.add_resource(Logout, "/user/auth/logout")
 api.add_resource(Register, "/user/auth/register")
