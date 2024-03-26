@@ -63,7 +63,6 @@ def test_update_post_logged_in(client):
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
         post_id = create_post().id
-        print(post_id)
         response_post_update = client.put(
             f"/post/{post_id}", json=update_post_data1, headers=create_headers(response)
         )
@@ -107,7 +106,7 @@ def test_delete_another_post(client):
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
         new_post = Post(
-            author="user2",
+            author=2,
             content=post_data.get("content"),
             title=post_data.get("title"),
         )
