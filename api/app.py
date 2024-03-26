@@ -29,6 +29,7 @@ Note: The backend is configured to run with a MongoDB database. Make sure to set
 
 import os
 from flask import Flask
+from flask_socketio import SocketIO
 from mongoengine import *
 from flask_jwt_extended import JWTManager
 import mongoengine
@@ -47,6 +48,7 @@ api = Api(app)
 app.config.from_object(config)
 
 jwt = JWTManager(app)
+socketio=SocketIO(app)
 
 
 api.add_resource(Login, "/user/auth/login")
@@ -67,4 +69,4 @@ api.add_resource(UserProfilePostList, "/user/<string:username>/post")
 
 if __name__ == "__main__":
     mongodb()
-    app.run(debug=True, host="0.0.0.0")
+    socketio.run(app,debug=True, host="0.0.0.0")

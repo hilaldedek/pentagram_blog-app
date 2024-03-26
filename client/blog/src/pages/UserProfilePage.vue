@@ -30,8 +30,14 @@
         >
           <span class="text"> Unfollow</span>
         </div>
+        <div
+          class="tooltip-container"
+        >
+          <span class="text">Message</span>
+        </div>
       </div>
     </div>
+    
     <div v-if="!username && localStorageData" class="messageDiv">
       <div class="userMessage">
         <div class="message">
