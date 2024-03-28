@@ -12,13 +12,39 @@ def test_get_all_post(client):
         assert response.status_code == 200
         assert "posts" in json.loads(response.data)
 
-
 # POST VIEW
 def test_post_view_not_logged_in(client):
     with app.test_client() as client:
         response = client.get("/user/post")
         assert response.status_code == 401
 
+
+def test_post_view_logged_in(client):
+    with app.test_client() as client:
+        new_user_create()
+        response_login = client.post("/user/auth/login", json=first_user_login_data)
+        assert response_login.status_code == 200
+        response = client.get("/user/post", headers=create_headers(response_login))
+        assert response.status_code == 200
+
+def test_post_detail_not_logged_in(client):
+    with app.test_client() as client:
+        new_user_create()
+        post_id = create_post().id
+        response = client.get(f"/post/{post_id}")
+        assert response.status_code == 401
+
+
+def test_post_detail_logged_in(client):
+    with app.test_client() as client:
+        new_user_create()
+        response_login = client.post("/user/auth/login", json=first_user_login_data)
+        assert response_login.status_code == 200
+        post_id = create_post().id
+        response = client.get(
+            f"/post/{post_id}", headers=create_headers(response_login)
+        )
+        assert response.status_code == 200
 
 def test_post_view_logged_in(client):
     with app.test_client() as client:
@@ -117,3 +143,11 @@ def test_delete_another_post(client):
             f"/post/{post_id}", headers=create_headers(response)
         )
         assert response_post_delete.status_code == 403
+
+
+def test_post_search(client):
+    with app.test_client() as client:
+        new_user_create()
+        post_tags = create_post().tags[0]
+        response_post_search = client.get(f"/tag/{post_tags}")
+        assert response_post_search.status_code == 200

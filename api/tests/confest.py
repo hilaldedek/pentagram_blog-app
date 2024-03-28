@@ -58,22 +58,26 @@ post_data = {
     "author": 1,
     "title": "Snow-white",
     "content": "abc",
+    "tags": ["Python", "vue", "python", "flask"],
 }
 
 post_data2 = {
     "author": 2,
     "title": "def",
     "content": "abc",
+    "tags": ["flask", "python", "dedek"],
 }
 
 update_post_data1 = {
     "title": "Cinderella",
     "content": "def",
+    "tags": ["Css", "Vue", "python"],
 }
 
 update_post_data2 = {
     "title": "Cinderella",
     "content": "def",
+    "tags": ["flask", "python", "mongo"],
 }
 
 comment_data1 = {"comment": "it's very nice!"}
@@ -106,6 +110,7 @@ def create_post():
         author=post_data.get("author"),
         content=post_data.get("content"),
         title=post_data.get("title"),
+        tags=post_data.get("tags"),
     )
     new_post.save()
     return new_post
@@ -116,6 +121,7 @@ def create_post_user2():
         author=post_data2.get("author"),
         content=post_data2.get("content"),
         title=post_data2.get("title"),
+        tags=post_data2.get("tags"),
     )
     new_post.save()
     return new_post
