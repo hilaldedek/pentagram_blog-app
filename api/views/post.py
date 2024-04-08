@@ -1,11 +1,6 @@
-from flask import jsonify, request,make_response
-from pymongo import MongoClient
-from mongoengine import *
-from models.post import Post
-from flask_jwt_extended import (
-    jwt_required,
-    get_jwt_identity,
-)
+from collections import OrderedDict
+from flask import jsonify, make_response, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_cors import cross_origin
 from datetime import datetime
 from flask_restful import Resource
@@ -44,7 +39,7 @@ class PostList(Resource):
                 "title": post.title,
                 "content": post.content,
                 "author": post.author.username,
-                "dateTime": post.dateTime.isoformat(),
+                "dateTime": post.dateTime,
                 "tags": post.tags,
                 "like_counter": post.like_counter,
                 "dislike_counter": post.dislike_counter,
@@ -102,7 +97,7 @@ class UserPost(Resource):
                     "title": post.title,
                     "content": post.content,
                     "author": post.author.username,
-                    "dateTime": post.dateTime.strftime("%d %m %Y %H %M %S"),
+                    "dateTime": post.dateTime,
                     "tags": post.tags,
                     "like_counter": post.like_counter,
                     "dislike_counter": post.dislike_counter,
@@ -131,7 +126,7 @@ class PostDetail(Resource):
                 "title": post.title,
                 "content": post.content,
                 "author": post.author.username,
-                "dateTime": post.dateTime.strftime("%d %m %Y %H %M %S"),
+                "dateTime": post.dateTime,
                 "tags": post.tags,
                 "like_counter": post.like_counter,
                 "dislike_counter": post.dislike_counter,
@@ -192,7 +187,7 @@ class PostSearch(Resource):
                 "author": str(post.author.username),
                 "title": post.title,
                 "content": post.content,
-                "dateTime": post.dateTime.isoformat(),
+                "dateTime": post.dateTime,
                 "tags": post.tags,
                 "like_counter": post.like_counter,
                 "dislike_counter": post.dislike_counter,

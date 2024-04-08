@@ -4,7 +4,6 @@ from models.comment_vote import Comment_vote
 from models.user import User
 from models.post import Post
 from models.vote import Vote
-import pytest
 from mongoengine import *
 from app import app
 import mongomock
@@ -54,31 +53,41 @@ second_user_data = {
     "email": "example2@gmail.com",
     "password": "test2",
 }
+third_user_data = {
+    "username": "user3",
+    "email": "example3@gmail.com",
+    "password": "test3",
+}
 
 post_data = {
-    "author": "user1",
+    "author": 1,
     "title": "Snow-white",
     "content": "abc",
+    "tags": ["Python", "vue", "python", "flask"],
 }
 
 post_data2 = {
-    "author": "user2",
+    "author": 2,
     "title": "def",
     "content": "abc",
+    "tags": ["flask", "python", "dedek"],
 }
 
 update_post_data1 = {
     "title": "Cinderella",
     "content": "def",
+    "tags": ["Css", "Vue", "python"],
 }
+
 update_post_data2 = {
     "title": "Cinderella",
     "content": "def",
+    "tags": ["flask", "python", "mongo"],
 }
 
 comment_data1 = {"comment": "it's very nice!"}
 
-comment_data2 = {"comment": "it's very nice!"}
+comment_data2 = {"comment": "very nice!"}
 
 
 update_comment_data = {"comment": "this comment updated!"}
@@ -98,7 +107,37 @@ def new_user_create():
         )
         new_user.set_password(password=first_user_data.get("password"))
         new_user.save()
-        return new_user.username
+        return new_user.id
+
+
+def new_user_create_2():
+    existing_user = User.objects(email=second_user_data.get("email")).first()
+    if existing_user:
+        return existing_user.username
+    else:
+        new_user = User(
+            username=second_user_data.get("username"),
+            email=second_user_data.get("email"),
+            password=second_user_data.get("password"),
+        )
+        new_user.set_password(password=second_user_data.get("password"))
+        new_user.save()
+        return new_user
+
+
+def new_user_create_3():
+    existing_user = User.objects(email=third_user_data.get("email")).first()
+    if existing_user:
+        return existing_user.username
+    else:
+        new_user = User(
+            username=third_user_data.get("username"),
+            email=third_user_data.get("email"),
+            password=third_user_data.get("password"),
+        )
+        new_user.set_password(password=third_user_data.get("password"))
+        new_user.save()
+        return new_user
 
 
 def create_post():
@@ -106,6 +145,7 @@ def create_post():
         author=post_data.get("author"),
         content=post_data.get("content"),
         title=post_data.get("title"),
+        tags=post_data.get("tags"),
     )
     new_post.save()
     return new_post
@@ -116,6 +156,7 @@ def create_post_user2():
         author=post_data2.get("author"),
         content=post_data2.get("content"),
         title=post_data2.get("title"),
+        tags=post_data2.get("tags"),
     )
     new_post.save()
     return new_post
@@ -123,7 +164,7 @@ def create_post_user2():
 
 def create_comment(post_id):
     new_comment = Comment_vote(
-        person=first_user_data.get("username"),
+        person=post_data.get("author"),
         postID=post_id,
         comment=comment_data1.get("comment"),
     )

@@ -113,7 +113,6 @@ export default {
     async getCommentData() {
       try {
         const postId = this.$route.params.postId;
-        console.log("postId: ", postId);
         const response = await fetch(
           `http://127.0.0.1:5000/comment-list/${postId}`,
           {

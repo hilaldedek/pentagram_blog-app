@@ -8,6 +8,7 @@ from tests.confest import *
 # User can view comments whether logged in or not
 def test_get_user_comments(client):
     with app.test_client() as client:
+        new_user_create()
         post_id = create_post().id
         create_comment(post_id)
         response = client.get(f"/comment-list/{post_id}")
@@ -39,7 +40,7 @@ def test_create_comment_logged_in():
 
 def test_update_comment_not_logged_in():
     with app.test_client() as client:
-        result = Comment_vote.objects.get()
+        result = Comment_vote.objects.first()
         comment_id = result.id
         response = client.put(f"/comment/{comment_id}", json=update_comment_data)
         assert response.status_code == 401
@@ -51,11 +52,13 @@ def test_update_comment_logged_in():
         response = client.post("/user/auth/login", json=first_user_login_data)
         assert response.status_code == 200
         post_id = create_post().id
-        comment_id = create_comment(post_id)._id
+        comment_id = create_comment(post_id).id
+        result = Comment_vote.objects(_id=comment_id).first()
+        print(result.comment, result)
         response_comment_update = client.put(
             f"/comment/{comment_id}",
-            headers=create_headers(response),
             json=update_comment_data,
+            headers=create_headers(response),
         )
         assert response_comment_update.status_code == 200
 
