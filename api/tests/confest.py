@@ -139,6 +139,33 @@ def new_user_create_3():
         new_user.save()
         return new_user
 
+def new_user_create_2():
+    existing_user = User.objects(email=second_user_data.get("email")).first()
+    if existing_user:
+        return existing_user.username
+    else:
+        new_user = User(
+            username=second_user_data.get("username"),
+            email=second_user_data.get("email"),
+            password=second_user_data.get("password"),
+        )
+        new_user.set_password(password=second_user_data.get("password"))
+        new_user.save()
+        return new_user
+    
+def new_user_create_3():
+    existing_user = User.objects(email=third_user_data.get("email")).first()
+    if existing_user:
+        return existing_user.username
+    else:
+        new_user = User(
+            username=third_user_data.get("username"),
+            email=third_user_data.get("email"),
+            password=third_user_data.get("password"),
+        )
+        new_user.set_password(password=third_user_data.get("password"))
+        new_user.save()
+        return new_user
 
 def create_post():
     new_post = Post(
