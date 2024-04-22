@@ -4,10 +4,11 @@ import RegisterPage from "../pages/RegisterPage.vue";
 import PostCreatePage from "../pages/PostCreatePage.vue";
 import ProfilePage from "../pages/ProfilePage.vue";
 import PostDeleteUpdatePage from "../pages/PostDeleteUpdatePage.vue";
-import CommentPage from "../pages/CommentPage.vue"
-import UserProfilePage from "../pages/UserProfilePage.vue"
+import CommentPage from "../pages/CommentPage.vue";
+import UserProfilePage from "../pages/UserProfilePage.vue";
 import Vue from "vue";
 import VueRouter from "vue-router";
+import ChatPage from "@/pages/ChatPage.vue";
 
 Vue.use(VueRouter);
 
@@ -21,7 +22,7 @@ const routes = [
     path: "/post/:postId",
     name: "PostDeleteUpdate",
     component: PostDeleteUpdatePage,
-    props: true
+    props: true,
   },
   {
     path: "/comment/:postId",
@@ -33,6 +34,12 @@ const routes = [
     name: "UserProfilePage",
     component: UserProfilePage,
   },
+  {
+    path: "/chat/:username",
+    name: "ChatPage",
+    component: ChatPage,
+  },
+
 ];
 
 const router = new VueRouter({

@@ -57,8 +57,8 @@ def test_update_comment_logged_in():
         print(result.comment, result)
         response_comment_update = client.put(
             f"/comment/{comment_id}",
-            headers=create_headers(response),
             json=update_comment_data,
+            headers=create_headers(response),
         )
         assert response_comment_update.status_code == 200
 

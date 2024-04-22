@@ -30,8 +30,12 @@
         >
           <span class="text"> Unfollow</span>
         </div>
+        <div class="tooltip-container" @click="userChat()">
+          <span class="text">Message</span>
+        </div>
       </div>
     </div>
+
     <div v-if="!username && localStorageData" class="messageDiv">
       <div class="userMessage">
         <div class="message">
@@ -122,6 +126,13 @@ export default {
     this.UserPostsList();
   },
   methods: {
+    userChat() {
+      const username = this.$route.params.username;
+      this.$router.push({
+        path: `/chat/${username}`,
+        params: { username: username },
+      });
+    },
     async UserPostsList() {
       const getToken = localStorage.getItem("access_token");
       const username = this.$route.params.username;
