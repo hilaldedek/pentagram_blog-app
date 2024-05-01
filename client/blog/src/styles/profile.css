@@ -1,0 +1,197 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kalnia:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
+@import url("../styles/variables.css");
+.main {
+  margin-top: 100px;
+  margin-bottom: 100px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.createPost{
+  border-radius: 10px;
+  margin: 5rem;
+  padding: 3rem;
+  
+  background-color: #a87c7c82;
+  
+}
+.createPost p{
+  font-size: 1.5rem;
+  color: #a87c7c;
+  font-family: "Kalnia", serif;
+}
+.buttonStyle{
+  background-color: #00000058;
+  width: 50%;
+  padding: 0.5rem;
+  border-radius: 5rem;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin: auto;
+  font-family: "Raleway", sans-serif;
+  color: #000000;
+  text-decoration: none;
+  font-weight: 800;
+}
+.card {
+  margin: 2rem;
+  position: relative;
+  border: 15px solid #bfc1b8;
+  box-shadow: 0px 1px 13px rgba(0, 0, 0, 0.1);
+  transition: all 120ms;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #eef0e5;
+  padding: 1rem;
+  padding-bottom: 3.4em;
+}
+.author {
+  margin-top: 1rem;
+  font-family: "Lobster", sans-serif;
+  font-size: 1.2rem;
+  color: #65451f;
+}
+.card .title {
+  font-family: "Kalnia", serif;
+  font-size: 1.8rem;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: var(--navbar-header-color);
+}
+
+.card .content {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: "Lora", serif;
+  font-size: 1.1rem;
+  color: #000;
+}
+
+.card:hover::after {
+  bottom: 0;
+  opacity: 1;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.text {
+  max-width: 55px;
+}
+
+.button {
+  margin: 1rem;
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  padding: 0 2rem;
+  border-radius: 1.5rem;
+  background: #bfc1b8;
+  background-size: 400%;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: "DM Serif Display", serif;
+}
+
+.button:hover::before {
+  transform: scaleX(1);
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+
+.buttonUpdate::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  
+  background: linear-gradient(
+    82.3deg,
+    rgb(93, 233, 158) 10.8%,
+    rgb(44, 189, 61) 94.3%
+  );
+  transition: all 0.475s;
+}
+.buttonDelete::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  width: 100%;
+  height: inherit;
+  border-radius: inherit;
+  background: linear-gradient(
+    82.3deg,
+    #FF8989 10.8%,
+    #FF6666 94.3%
+  );
+  transition: all 0.475s;
+}
+
+
+.image {
+  background: rgb(241, 241, 241);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.UDButtons{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem;
+}
+.dateTime{
+  margin-top: 1rem;
+  font-family: "Raleway", sans-serif;
+  font-weight: 800;
+}
+/* follow Info */
+.infoDiv{
+  margin-top: 8rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.info {
+  font-family: "Raleway", sans-serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+}
+.center {
+  text-align: center;
+  font-size: 2rem;
+}
+.follow {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+.authorName {
+  font-family: "DM Serif Display", serif;
+  font-size: 2.5rem;
+}
